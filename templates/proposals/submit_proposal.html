@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Submit Your Proposal for {{ job.title }}{% endblock %}
+
+{% block content %}
+<div style="background:#f1f5f9;min-height:calc(100vh - 68px);padding:2.5rem 0;">
+<div class="container" style="max-width:680px;">
+
+    <!-- Job Context Card -->
+    <div class="card-main p-4 mb-4" style="border-left:4px solid #2563eb;">
+        <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#64748b;margin-bottom:0.4rem;">Bidding on</div>
+        <h1 style="font-size:1.15rem;font-weight:800;color:#0f172a;margin-bottom:0.3rem;">{{ job.title }}</h1>
+        <div style="font-size:0.82rem;color:#94a3b8;">
+            by {{ job.client.get_full_name|default:job.client.username }}
+            &nbsp;·&nbsp; Budget: <strong style="color:#0f172a;">{{ job.budget_display }}</strong>
+        </div>
+    </div>
+
+    <!-- Proposal Form -->
+    <div class="card-main p-4">
+        <h2 style="font-size:1rem;font-weight:800;color:#0f172a;margin-bottom:1.5rem;">Your Proposal</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- Cover Letter -->
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Cover Letter <span style="color:#ef4444;">*</span></label>
+                {{ form.cover_letter }}
+                {% if form.cover_letter.errors %}<div class="text-danger mt-1" style="font-size:0.8rem;">{{ form.cover_letter.errors.0 }}</div>{% endif %}
+                <div style="font-size:0.78rem;color:#94a3b8;margin-top:3px;">Explain why you're the right fit. Mention relevant experience.</div>
+            </div>
+
+            <!-- Bid + Delivery -->
+            <div class="row g-3 mb-4">
+                <div class="col-sm-6">
+                    <label class="form-label fw-semibold">Your Bid <span style="color:#ef4444;">*</span></label>
+                    <div style="position:relative;">
+                        <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#64748b;font-weight:600;">₹</span>
+                        {{ form.bid_amount }}
+                    </div>
+                    {% if form.bid_amount.errors %}<div class="text-danger mt-1" style="font-size:0.8rem;">{{ form.bid_amount.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-sm-6">
+                    <label class="form-label fw-semibold">Delivery Time <span style="color:#ef4444;">*</span></label>
+                    <div style="position:relative;">
+                        {{ form.delivery_days }}
+                        <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:0.83rem;pointer-events:none;">days</span>
+                    </div>
+                    {% if form.delivery_days.errors %}<div class="text-danger mt-1" style="font-size:0.8rem;">{{ form.delivery_days.errors.0 }}</div>{% endif %}
+                </div>
+            </div>
+
+            <!-- Non-field errors -->
+            {% if form.non_field_errors %}
+            <div class="mb-3 p-3 rounded-3" style="background:#fee2e2;border:1px solid #fecaca;">
+                {% for error in form.non_field_errors %}
+                <p class="mb-0" style="font-size:0.83rem;color:#dc2626;">{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Actions -->
+            <div class="d-flex gap-3 justify-content-end">
+                <a href="{% url 'jobs:detail' job.pk %}"
+                   style="padding:0.7rem 1.5rem;border:1.5px solid #e2e8f0;border-radius:10px;font-weight:600;font-size:0.875rem;color:#64748b;text-decoration:none;background:#fff;">
+                    Cancel
+                </a>
+                <button type="submit" id="proposal-submit-btn" class="btn-primary-main">
+                    <i class="bi bi-send" id="proposal-icon"></i>
+                    <span id="proposal-text">Submit Proposal</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+</div>
+
+<script>
+(function () {
+    var form = document.querySelector('form[method="post"]');
+    var btn  = document.getElementById('proposal-submit-btn');
+    var icon = document.getElementById('proposal-icon');
+    var lbl  = document.getElementById('proposal-text');
+    var sent = false;
+    form.addEventListener('submit', function () {
+        if (sent) return false;
+        sent = true;
+        btn.disabled = true;
+        btn.style.opacity = '0.75';
+        icon.className = 'bi bi-hourglass-split';
+        lbl.textContent = 'Submitting…';
+    });
+})();
+</script>
+{% endblock %}
+

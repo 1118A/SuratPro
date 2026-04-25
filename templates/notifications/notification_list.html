@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Notifications — Stay Up to Date{% endblock %}
+
+{% block content %}
+<div style="background:#f1f5f9;min-height:calc(100vh - 68px);padding:3rem 0;">
+<div class="container" style="max-width:720px;">
+
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <h2 class="fw-bold mb-0" style="color:#0f172a;">
+      <i class="bi bi-bell-fill text-primary me-2"></i>Notifications
+    </h2>
+    {% if total_count > 0 %}
+    <a href="{% url 'notifications:mark_all_read' %}" class="btn btn-outline-secondary btn-sm" style="border-radius:8px;">
+      <i class="bi bi-check2-all me-1"></i>Mark All Read
+    </a>
+    {% endif %}
+  </div>
+
+  {% if total_count == 0 %}
+  <div class="card-main p-5 text-center">
+    <i class="bi bi-bell-slash" style="font-size:3rem;color:#cbd5e1;"></i>
+    <p class="mt-3 mb-0 fw-semibold" style="color:#64748b;">You're all caught up!</p>
+    <p style="color:#94a3b8;font-size:0.85rem;">No notifications yet.</p>
+  </div>
+  {% endif %}
+
+  {% if today_notifs %}
+  <div class="mb-1">
+    <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;color:#94a3b8;letter-spacing:0.08em;padding:0 4px;margin-bottom:8px;">
+      Today
+    </div>
+    {% for notif in today_notifs %}
+    {% include 'partials/_notif_item.html' %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if yesterday_notifs %}
+  <div class="mb-1 mt-3">
+    <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;color:#94a3b8;letter-spacing:0.08em;padding:0 4px;margin-bottom:8px;">
+      Yesterday
+    </div>
+    {% for notif in yesterday_notifs %}
+    {% include 'partials/_notif_item.html' %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if older_notifs %}
+  <div class="mb-1 mt-3">
+    <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;color:#94a3b8;letter-spacing:0.08em;padding:0 4px;margin-bottom:8px;">
+      Older
+    </div>
+    {% for notif in older_notifs %}
+    {% include 'partials/_notif_item.html' %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,281 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Hire Top Freelancers in Surat — Textile, Diamond, Tech & More{% endblock %}
+{% block meta_description %}SuratPro — Surat's first hyper-local freelancer marketplace. Connecting verified freelancers with textile, diamond, and SME businesses. Escrow payments, milestone contracts, Gujarati & English.{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero-section">
+    <div class="container position-relative" style="z-index:2;">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+
+                <!-- Location badge -->
+                <div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);border-radius:50px;padding:0.35rem 1rem;font-size:0.78rem;font-weight:600;color:#bfdbfe;margin-bottom:1rem;">
+                    <i class="bi bi-geo-alt-fill" style="color:#60a5fa;"></i>
+                    Exclusively for Surat, Gujarat &nbsp;·&nbsp; <span style="color:#a5b4fc;">સુરત માટે, સુરત દ્વારા</span>
+                </div>
+
+                <h1 class="hero-title">
+                    Surat's First<br>
+                    <span class="highlight">Hyper-Local</span><br>
+                    Freelance Platform
+                </h1>
+                <p class="hero-subtitle">
+                    Connecting verified freelancers with textile mills, diamond firms, and SME businesses — in Gujarati &amp; English. Escrow-secured payments, milestone contracts, real results.
+                </p>
+
+                <!-- Search Bar -->
+                <div class="search-bar-wrapper mt-4">
+                    <i class="bi bi-search ms-3 text-muted"></i>
+                    <input type="text" class="search-bar-input" id="hero-search"
+                           placeholder='Search "Textile website", "Diamond ERP", "Logo design"...'>
+                    <button class="search-bar-btn"
+                            onclick="window.location.href='{% url 'jobs:list' %}?q='+document.getElementById('hero-search').value">
+                        Search Jobs
+                    </button>
+                </div>
+
+                <!-- Stats -->
+                <div class="hero-stats">
+                    <div class="hero-stat-item">
+                        <div class="hero-stat-number">25K+</div>
+                        <div class="hero-stat-label">Freelancers</div>
+                    </div>
+                    <div class="hero-stat-item">
+                        <div class="hero-stat-number">8K+</div>
+                        <div class="hero-stat-label">Local Businesses</div>
+                    </div>
+                    <div class="hero-stat-item">
+                        <div class="hero-stat-number">₹2Cr+</div>
+                        <div class="hero-stat-label">Paid Out</div>
+                    </div>
+                    <div class="hero-stat-item">
+                        <div class="hero-stat-number">98%</div>
+                        <div class="hero-stat-label">Satisfaction</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Role Selection Cards -->
+            <div class="col-lg-5">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <p class="text-center mb-3" style="color:#94a3b8;font-size:0.875rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;">
+                            I want to...
+                        </p>
+                    </div>
+                    <div class="col-6">
+                        <a href="{% url 'accounts:register' %}?role=freelancer" class="role-card">
+                            <div class="role-card-icon" style="background:rgba(99,102,241,0.2);">
+                                <i class="bi bi-laptop" style="color:#818cf8;"></i>
+                            </div>
+                            <div class="role-card-title">Find Work</div>
+                            <div class="role-card-desc">I'm a freelancer looking for local Surat projects</div>
+                            <div class="role-card-cta">Get Started <i class="bi bi-arrow-right"></i></div>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="{% url 'accounts:register' %}?role=client" class="role-card">
+                            <div class="role-card-icon" style="background:rgba(37,99,235,0.2);">
+                                <i class="bi bi-building" style="color:#60a5fa;"></i>
+                            </div>
+                            <div class="role-card-title">Hire Talent</div>
+                            <div class="role-card-desc">I'm a Surat business looking for skilled freelancers</div>
+                            <div class="role-card-cta">Post a Job <i class="bi bi-arrow-right"></i></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SURAT SECTORS SECTION -->
+<section class="py-5 bg-white">
+    <div class="container py-4">
+        <div class="text-center mb-5">
+            <div class="section-label">Built for Surat's Industries</div>
+            <h2 class="section-title">Serving Every Sector</h2>
+            <p class="section-subtitle mt-2">
+                From textile mills to diamond trading firms — SuratPro is purpose-built for Surat's unique business ecosystem.
+            </p>
+        </div>
+        <div class="row g-3">
+            {% for cat in default_categories %}
+            <div class="col-6 col-md-4 col-lg-3">
+                <div class="feature-card text-center">
+                    <div class="feature-icon mx-auto" style="background:{{ cat.bg }};color:{{ cat.color }};">
+                        <i class="bi {{ cat.icon }}"></i>
+                    </div>
+                    <div class="feature-title">{{ cat.name }}</div>
+                    <div class="feature-desc">{{ cat.desc }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- PLATFORM ADVANTAGES -->
+<section class="py-5" style="background:#f1f5f9;">
+    <div class="container py-4">
+        <div class="text-center mb-5">
+            <div class="section-label">Why SuratPro</div>
+            <h2 class="section-title">Built Differently — For Surat</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card-main p-4 h-100 text-center">
+                    <div style="width:56px;height:56px;background:#dbeafe;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.5rem;color:#2563eb;">
+                        <i class="bi bi-shield-lock-fill"></i>
+                    </div>
+                    <h3 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:0.4rem;">Escrow Payments</h3>
+                    <p style="font-size:0.83rem;color:#64748b;line-height:1.6;margin:0;">UPI, card &amp; net banking. Funds held safely until milestone approval.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card-main p-4 h-100 text-center">
+                    <div style="width:56px;height:56px;background:#d1fae5;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.5rem;color:#059669;">
+                        <i class="bi bi-patch-check-fill"></i>
+                    </div>
+                    <h3 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:0.4rem;">Verified Profiles</h3>
+                    <p style="font-size:0.83rem;color:#64748b;line-height:1.6;margin:0;">Portfolio, ratings, and industry badges. Only genuine Surat-based professionals.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card-main p-4 h-100 text-center">
+                    <div style="width:56px;height:56px;background:#ede9fe;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.5rem;color:#7c3aed;">
+                        <i class="bi bi-list-task"></i>
+                    </div>
+                    <h3 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:0.4rem;">Milestone Contracts</h3>
+                    <p style="font-size:0.83rem;color:#64748b;line-height:1.6;margin:0;">Break projects into milestones with built-in dispute resolution if needed.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card-main p-4 h-100 text-center">
+                    <div style="width:56px;height:56px;background:#fef3c7;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.5rem;color:#d97706;">
+                        <i class="bi bi-translate"></i>
+                    </div>
+                    <h3 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:0.4rem;">Gujarati + English</h3>
+                    <p style="font-size:0.83rem;color:#64748b;line-height:1.6;margin:0;">Full bilingual platform. Work and communicate in your language.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="py-5 bg-white">
+    <div class="container py-4">
+        <div class="text-center mb-5">
+            <div class="section-label">Simple Process</div>
+            <h2 class="section-title">How SuratPro Works</h2>
+        </div>
+        <div class="row g-4 text-center">
+            <div class="col-md-3">
+                <div class="step-number">1</div>
+                <h5 class="mt-2" style="font-weight:700;">Create Your Profile</h5>
+                <p class="text-muted" style="font-size:0.875rem;">Sign up, add your skills, portfolio, and get verified as a Surat professional.</p>
+            </div>
+            <div class="col-md-3">
+                <div class="step-number">2</div>
+                <h5 class="mt-2" style="font-weight:700;">Post or Find Jobs</h5>
+                <p class="text-muted" style="font-size:0.875rem;">Clients post jobs, freelancers submit targeted proposals with their best bid.</p>
+            </div>
+            <div class="col-md-3">
+                <div class="step-number">3</div>
+                <h5 class="mt-2" style="font-weight:700;">Secure Contract</h5>
+                <p class="text-muted" style="font-size:0.875rem;">Work under a milestone-based contract with full escrow payment protection.</p>
+            </div>
+            <div class="col-md-3">
+                <div class="step-number">4</div>
+                <h5 class="mt-2" style="font-weight:700;">Get Paid — UPI Fast</h5>
+                <p class="text-muted" style="font-size:0.875rem;">Instant UPI payments upon milestone approval. No delays, no surprises.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TOP FREELANCERS SECTION -->
+<section class="py-5" style="background:#f1f5f9;">
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <div class="section-label">Featured Surat Talent</div>
+                <h2 class="section-title">Top Freelancers</h2>
+            </div>
+            <a href="{% url 'accounts:freelancers_list' %}" class="btn-secondary-main">
+                View All <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+        <div class="row g-3">
+            {% for freelancer in top_freelancers %}
+            <div class="col-md-6 col-lg-4">
+                <a href="{% url 'accounts:profile_username' freelancer.username %}" class="freelancer-card">
+                    <div class="d-flex align-items-start gap-3">
+                        <img src="{{ freelancer.get_avatar_url }}" alt="{{ freelancer.username }}"
+                             class="freelancer-avatar-sm"
+                             onerror="this.src='{% static "img/default_avatar.png" %}'">
+                        <div class="flex-grow-1 min-w-0">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="freelancer-name">{{ freelancer.get_full_name|default:freelancer.username }}</span>
+                                {% if freelancer.is_verified %}
+                                <span class="badge-verified"><i class="bi bi-patch-check-fill"></i></span>
+                                {% endif %}
+                            </div>
+                            {% if freelancer.location %}
+                            <div class="text-muted" style="font-size:0.78rem;">
+                                <i class="bi bi-geo-alt me-1"></i>{{ freelancer.location }}
+                            </div>
+                            {% endif %}
+                            {% if freelancer.bio %}
+                            <div class="freelancer-bio-excerpt">{{ freelancer.bio }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <div class="mb-3" style="font-size:3rem;opacity:0.3;"><i class="bi bi-people"></i></div>
+                    <p class="text-muted">No freelancers yet. <a href="{% url 'accounts:register' %}?role=freelancer">Be the first in Surat!</a></p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CTA SECTION -->
+<section style="background:linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);padding:5rem 0;">
+    <div class="container text-center">
+
+        <!-- Seed round badge -->
+        <div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);border-radius:50px;padding:0.4rem 1.1rem;font-size:0.78rem;font-weight:600;color:#bfdbfe;margin-bottom:1.5rem;">
+            <i class="bi bi-graph-up-arrow" style="color:#60a5fa;"></i>
+            Seed Round Open &nbsp;·&nbsp; ₹25L–50L Ask &nbsp;·&nbsp; 18-Month Runway
+        </div>
+
+        <h2 style="font-size:2.2rem;font-weight:800;color:#fff;letter-spacing:-0.5px;">
+            Ready to Join Surat's<br>Freelance Revolution?
+        </h2>
+        <p style="color:#94a3b8;font-size:1rem;margin-top:0.75rem;max-width:500px;margin-left:auto;margin-right:auto;">
+            Join 25,000+ freelancers and 8,000+ Surat businesses already growing smarter with SuratPro.
+        </p>
+        <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
+            <a href="{% url 'accounts:register' %}?role=freelancer" class="btn-primary-main" style="font-size:1rem;padding:0.9rem 2rem;">
+                <i class="bi bi-lightning-fill"></i> Join as Freelancer
+            </a>
+            <a href="{% url 'accounts:register' %}?role=client"
+               style="font-size:1rem;padding:0.9rem 2rem;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.2);color:#fff;border-radius:50px;font-weight:600;display:inline-flex;align-items:center;gap:0.5rem;text-decoration:none;">
+                <i class="bi bi-building"></i> Post for Your Business
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}My Contracts — Active & Completed Work{% endblock %}
+
+{% block content %}
+<div style="background:#f1f5f9;min-height:calc(100vh - 68px);padding:2.5rem 0;">
+<div class="container">
+
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
+        <div>
+            <div class="section-label">Dashboard</div>
+            <h1 class="section-title mt-1" style="font-size:1.5rem;">My Contracts</h1>
+        </div>
+    </div>
+
+    {% if contracts %}
+    <div class="d-flex flex-column gap-3">
+    {% for contract in contracts %}
+    <div class="card-main p-4">
+        <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
+            <div class="flex-grow-1">
+                <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                    <a href="{% url 'contracts:detail' contract.pk %}"
+                       style="font-size:1rem;font-weight:700;color:#0f172a;text-decoration:none;">
+                        Contract for: {{ contract.job.title }}
+                    </a>
+                    {% if contract.status == 'active' %}
+                    <span style="padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;background:#d1fae5;color:#065f46;">{{ contract.get_status_display }}</span>
+                    {% elif contract.status == 'completed' %}
+                    <span style="padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;background:#dbeafe;color:#1d4ed8;">{{ contract.get_status_display }}</span>
+                    {% elif contract.status == 'cancelled' %}
+                    <span style="padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;background:#fef2f2;color:#991b1b;">{{ contract.get_status_display }}</span>
+                    {% else %}
+                    <span style="padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;background:#fef3c7;color:#92400e;">{{ contract.get_status_display }}</span>
+                    {% endif %}
+                </div>
+                <div style="font-size:0.8rem;color:#94a3b8;">
+                    {% if request.user == contract.client %}
+                        Freelancer: <strong>{{ contract.freelancer.username }}</strong>
+                    {% else %}
+                        Client: <strong>{{ contract.client.username }}</strong>
+                    {% endif %}
+                    &nbsp;·&nbsp; Amount: <strong>₹{{ contract.agreed_amount }}</strong>
+                    &nbsp;·&nbsp; Deadline: <strong>{{ contract.deadline|date:"M d, Y"|default:"Not set" }}</strong>
+                </div>
+            </div>
+            <div class="d-flex gap-2" style="flex-shrink:0;">
+                <a href="{% url 'contracts:detail' contract.pk %}"
+                   style="padding:0.4rem 1rem;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.83rem;font-weight:600;color:#334155;text-decoration:none;background:#fff;">
+                    View Contract
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="card-main p-5 text-center">
+        <div style="font-size:3rem;margin-bottom:1rem;">🤝</div>
+        <h2 style="font-size:1.1rem;font-weight:700;color:#0f172a;">No contracts yet</h2>
+        <p style="color:#64748b;font-size:0.875rem;margin-bottom:0;">When a proposal is accepted, a contract will appear here.</p>
+    </div>
+    {% endif %}
+
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,273 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ job.title }} — Freelance Job in Surat{% endblock %}
+{% block meta_description %}{{ job.description|truncatewords:25 }}{% endblock %}
+
+{% block content %}
+<div style="background:#f1f5f9;min-height:calc(100vh - 68px);padding:2.5rem 0;">
+    <div class="container">
+
+        <!-- Breadcrumb -->
+        <nav style="font-size:0.8rem;color:#94a3b8;margin-bottom:1.5rem;">
+            <a href="{% url 'jobs:list' %}" style="color:#2563eb;text-decoration:none;">Jobs</a>
+            <span class="mx-2">/</span>
+            <span>{{ job.title|truncatewords:6 }}</span>
+        </nav>
+
+        <div class="row g-4">
+
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <div class="card-main p-4 mb-4">
+
+                    <!-- Header -->
+                    <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap mb-3">
+                        <div>
+                            <h1
+                                style="font-size:1.4rem;font-weight:800;color:#0f172a;letter-spacing:-0.3px;margin-bottom:0.35rem;">
+                                {{ job.title }}</h1>
+                            <div style="font-size:0.82rem;color:#94a3b8;">
+                                Posted by
+                                <a href="{% url 'accounts:profile_username' job.client.username %}"
+                                    style="color:#2563eb;text-decoration:none;font-weight:600;">
+                                    {{ job.client.get_full_name|default:job.client.username }}
+                                </a>
+                                &nbsp;·&nbsp; {{ job.created_at|timesince }} ago
+                                &nbsp;·&nbsp; <i class="bi bi-eye"></i> {{ job.views_count }} views
+                            </div>
+                        </div>
+
+                        {% if job.status == 'open' %}
+                        <span
+                            style="background:#d1fae5;color:#065f46;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;">Open</span>
+                        {% elif job.status == 'in_progress' %}
+                        <span
+                            style="background:#dbeafe;color:#1d4ed8;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;">In
+                            Progress</span>
+                        {% else %}
+                        <span
+                            style="background:#f1f5f9;color:#64748b;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;">Closed</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Description -->
+                    <div style="font-size:0.9rem;color:#334155;line-height:1.8;white-space:pre-wrap;">{{ job.description }}</div>
+
+                    <!-- Skills -->
+                    {% if job.skills_required.all %}
+                    <div class="mt-4">
+                        <div
+                            style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#64748b;margin-bottom:0.6rem;">
+                            Required Skills</div>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for skill in job.skills_required.all %}
+                            <span
+                                style="background:#eff6ff;color:#1d4ed8;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;">{{
+                                skill.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Proposals Section (Client Only) -->
+                {% if user == job.client and proposals %}
+                <div class="card-main p-4">
+                    <h2 style="font-size:1rem;font-weight:800;color:#0f172a;margin-bottom:1.25rem;">
+                        <i class="bi bi-file-text me-2" style="color:#2563eb;"></i>
+                        Proposals ({{ job.proposal_count }})
+                    </h2>
+                    <div class="d-flex flex-column gap-3">
+                        {% for proposal in proposals %}
+                        <div style="border:1px solid #e2e8f0;border-radius:12px;padding:1.25rem;background:#f8fafc;">
+                            <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
+                                <div class="d-flex align-items-center gap-3">
+                                    <img src="{{ proposal.freelancer.get_avatar_url }}" alt=""
+                                        style="width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid #e2e8f0;">
+                                    <div>
+                                        <div style="font-weight:700;font-size:0.9rem;color:#0f172a;">
+                                            {{ proposal.freelancer.get_full_name|default:proposal.freelancer.username }}
+                                        </div>
+                                        <div style="font-size:0.78rem;color:#94a3b8;">
+                                            {{ proposal.created_at|timesince }} ago
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <div style="font-size:1.1rem;font-weight:800;color:#0f172a;">₹{{ proposal.bid_amount }}</div>
+                                    <div style="font-size:0.78rem;color:#64748b;">{{ proposal.delivery_days }} day{{
+                                        proposal.delivery_days|pluralize }}</div>
+                                </div>
+                            </div>
+                            <p style="font-size:0.875rem;color:#475569;margin:0.9rem 0 1rem;line-height:1.65;">
+                                {{ proposal.cover_letter|truncatewords:40 }}
+                            </p>
+
+                            <!-- Status badge OR accept/reject buttons -->
+                            {% if proposal.status == 'pending' and job.status == 'open' %}
+                            <div class="d-flex gap-2">
+                                <form method="post" action="{% url 'proposals:accept' proposal.pk %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-primary-main"
+                                        style="font-size:0.83rem;padding:0.4rem 1.1rem;">
+                                        <i class="bi bi-check-lg"></i> Accept
+                                    </button>
+                                </form>
+                                <form method="post" action="{% url 'proposals:reject' proposal.pk %}">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                        style="font-size:0.83rem;padding:0.4rem 1.1rem;border:1.5px solid #e2e8f0;border-radius:8px;background:#fff;color:#64748b;font-weight:600;cursor:pointer;">
+                                        <i class="bi bi-x-lg"></i> Reject
+                                    </button>
+                                </form>
+                            </div>
+                            {% else %}
+                            <!-- Separate spans per status, no template tags inside style="" -->
+                            {% if proposal.status == 'accepted' %}
+                            <span
+                                style="font-size:0.78rem;font-weight:700;padding:3px 10px;border-radius:20px;background:#d1fae5;color:#065f46;">
+                                {{ proposal.get_status_display }}
+                            </span>
+                            {% elif proposal.status == 'rejected' %}
+                            <span
+                                style="font-size:0.78rem;font-weight:700;padding:3px 10px;border-radius:20px;background:#fee2e2;color:#991b1b;">
+                                {{ proposal.get_status_display }}
+                            </span>
+                            {% else %}
+                            <span
+                                style="font-size:0.78rem;font-weight:700;padding:3px 10px;border-radius:20px;background:#f1f5f9;color:#64748b;">
+                                {{ proposal.get_status_display }}
+                            </span>
+                            {% endif %}
+                            {% endif %}
+
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+
+                <!-- Job Details Card -->
+                <div class="card-main p-4 mb-4">
+                    <h3
+                        style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#64748b;margin-bottom:1rem;">
+                        Job Details</h3>
+                    <div class="d-flex flex-column gap-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span style="font-size:0.83rem;color:#64748b;"><i class="bi bi-cash me-1"></i>Budget</span>
+                            <span style="font-weight:700;color:#0f172a;">{{ job.budget_display }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span style="font-size:0.83rem;color:#64748b;"><i
+                                    class="bi bi-bar-chart me-1"></i>Experience</span>
+                            <span style="font-weight:600;color:#7c3aed;">{{ job.get_experience_level_display }}</span>
+                        </div>
+                        {% if job.deadline %}
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span style="font-size:0.83rem;color:#64748b;"><i
+                                    class="bi bi-calendar me-1"></i>Deadline</span>
+                            <span style="font-weight:600;color:#0f172a;">{{ job.deadline|date:"M d, Y" }}</span>
+                        </div>
+                        {% endif %}
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span style="font-size:0.83rem;color:#64748b;"><i
+                                    class="bi bi-file-text me-1"></i>Proposals</span>
+                            <span style="font-weight:600;color:#0f172a;">{{ job.proposal_count }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTA block -->
+                {% if user.is_authenticated %}
+                {% if user.is_freelancer %}
+                {% if user_proposal %}
+                <div class="card-main p-4 text-center">
+                    <div style="font-size:1.5rem;margin-bottom:0.5rem;">✅</div>
+                    <div style="font-weight:700;font-size:0.9rem;color:#0f172a;">Proposal Submitted</div>
+                    <div style="font-size:0.8rem;color:#64748b;margin:0.35rem 0 1rem;">
+                        Status: <strong>{{ user_proposal.get_status_display }}</strong>
+                    </div>
+                    {% if user_proposal.is_pending %}
+                    <form method="post" action="{% url 'proposals:withdraw' user_proposal.pk %}">
+                        {% csrf_token %}
+                        <button type="submit"
+                            style="width:100%;padding:0.6rem;border:1.5px solid #e2e8f0;border-radius:8px;background:#fff;color:#64748b;font-weight:600;cursor:pointer;font-size:0.83rem;">
+                            Withdraw Proposal
+                        </button>
+                    </form>
+                    {% elif user_proposal.is_accepted %}
+                    <a href="{% url 'messaging:start_conversation' job.client.username %}?job={{ job.pk }}"
+                        style="display:flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.6rem;border:1.5px solid #e2e8f0;border-radius:8px;background:#2563eb;color:#fff;font-weight:600;font-size:0.875rem;text-decoration:none;">
+                        <i class="bi bi-chat-dots"></i> Message Client
+                    </a>
+                    {% endif %}
+                </div>
+                {% elif job.is_open %}\n                <a href="{% url 'proposals:submit' job.pk %}" class="btn-primary-main w-100 justify-content-center">
+                    <i class="bi bi-send"></i> Submit a Proposal
+                </a>
+                <!-- Phase 10: Save Job button -->
+                {% if user.is_authenticated and user.is_freelancer %}
+                <div class="mt-2">
+                  {% with is_saved=job.saved_by.filter %}
+                  <a href="{% url 'jobs:save_toggle' job.pk %}"
+                     class="w-100 d-flex align-items-center justify-content-center gap-2"
+                     style="padding:0.55rem;border:1.5px solid #e2e8f0;border-radius:8px;background:#fff;
+                            color:#64748b;font-weight:600;font-size:0.83rem;text-decoration:none;
+                            transition:all 0.15s;"
+                     onmouseover="this.style.borderColor='#2563eb';this.style.color='#2563eb';"
+                     onmouseout="this.style.borderColor='#e2e8f0';this.style.color='#64748b';">
+                    <i class="bi bi-bookmark{% if request.user in job.saved_by.values_list|first %}-fill{% endif %}"></i>
+                    Save Job
+                  </a>
+                  {% endwith %}
+                </div>
+                {% endif %}
+                {% else %}
+                <div class="card-main p-4 text-center">
+                    <p style="color:#64748b;font-size:0.875rem;margin:0;">This job is no longer accepting proposals.</p>
+                </div>
+                {% endif %}
+                {% elif user == job.client %}
+                <div class="card-main p-4">
+                    <div
+                        style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#64748b;margin-bottom:0.75rem;">
+                        Manage Job</div>
+                    <div class="d-flex flex-column gap-2">
+                        {% if job.contract %}
+                        <a href="{% url 'messaging:start_conversation' job.contract.freelancer.username %}?job={{ job.pk }}"
+                            style="display:flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.6rem;border:1.5px solid #e2e8f0;border-radius:8px;background:#fff;color:#0f172a;font-weight:600;font-size:0.875rem;text-decoration:none;">
+                            <i class="bi bi-chat-dots"></i> Message Freelancer
+                        </a>
+                        {% endif %}
+                        <a href="{% url 'jobs:edit' job.pk %}"
+                            style="display:flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.6rem;border:1.5px solid #e2e8f0;border-radius:8px;background:#fff;color:#0f172a;font-weight:600;font-size:0.875rem;text-decoration:none;">
+                            <i class="bi bi-pencil"></i> Edit Job
+                        </a>
+                        {% if job.is_open %}
+                        <form method="post" action="{% url 'jobs:close' job.pk %}">
+                            {% csrf_token %}
+                            <button type="submit"
+                                style="width:100%;padding:0.6rem;border:1.5px solid #fecaca;border-radius:8px;background:#fff;color:#dc2626;font-weight:600;font-size:0.875rem;cursor:pointer;">
+                                <i class="bi bi-x-circle"></i> Close Job
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                {% else %}
+                <div class="card-main p-4 text-center">
+                    <p style="color:#64748b;font-size:0.875rem;margin-bottom:1rem;">Sign in to submit a proposal.</p>
+                    <a href="{% url 'accounts:login' %}" class="btn-primary-main justify-content-center">Sign In</a>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

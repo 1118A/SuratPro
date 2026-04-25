@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block title %}My Earnings — Freelancer Dashboard{% endblock %}
+
+{% block content %}
+<div style="background:#f1f5f9;min-height:calc(100vh - 68px);padding:2.5rem 0;">
+<div class="container">
+
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h2 class="fw-bold mb-0" style="color:#0f172a;">
+        <i class="bi bi-graph-up-arrow text-primary me-2"></i>Earnings Dashboard
+      </h2>
+      <p class="text-muted mb-0" style="font-size:0.9rem;">Your financial summary on SuratPro</p>
+    </div>
+    <a href="{% url 'payments:payment_list' %}" class="btn btn-outline-primary btn-sm" style="border-radius:8px;">
+      <i class="bi bi-clock-history me-1"></i>Full History
+    </a>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-sm-6 col-lg-3">
+      <div class="card-main p-3 text-center" style="border-top:3px solid #2563eb;">
+        <div style="font-size:1.6rem;font-weight:800;color:#2563eb;">₹{{ total_earned|floatformat:0 }}</div>
+        <div class="text-muted" style="font-size:0.8rem;">Total Received</div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="card-main p-3 text-center" style="border-top:3px solid #059669;">
+        <div style="font-size:1.6rem;font-weight:800;color:#059669;">₹{{ net_earned|floatformat:0 }}</div>
+        <div class="text-muted" style="font-size:0.8rem;">Net Earned (after fees)</div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="card-main p-3 text-center" style="border-top:3px solid #f59e0b;">
+        <div style="font-size:1.6rem;font-weight:800;color:#f59e0b;">₹{{ pending_value|floatformat:0 }}</div>
+        <div class="text-muted" style="font-size:0.8rem;">Pending (Active Contracts)</div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="card-main p-3 text-center" style="border-top:3px solid #dc2626;">
+        <div style="font-size:1.6rem;font-weight:800;color:#dc2626;">₹{{ total_fees_paid|floatformat:0 }}</div>
+        <div class="text-muted" style="font-size:0.8rem;">Platform Fees (20%)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Monthly Chart -->
+  <div class="card-main p-4 mb-4">
+    <h6 class="fw-bold mb-3" style="color:#334155;">
+      <i class="bi bi-bar-chart-fill text-primary me-2"></i>Last 6 Months
+    </h6>
+    {% if monthly_data %}
+    <div class="d-flex align-items-flex-end gap-3" style="height:120px;align-items:flex-end;">
+      {% for m in monthly_data %}
+      {% with pct=m.total|floatformat:0 %}
+      <div class="flex-fill text-center position-relative" style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;">
+        <div style="font-size:0.65rem;color:#64748b;margin-bottom:3px;">₹{{ m.total|floatformat:0 }}</div>
+        <div style="background:linear-gradient(180deg,#3b82f6,#2563eb);border-radius:6px 6px 0 0;width:70%;
+                    height:{% widthratio m.total max_monthly 100 %}%;">
+        </div>
+        <div style="font-size:0.65rem;color:#94a3b8;margin-top:4px;">{{ m.label }}</div>
+      </div>
+      {% endwith %}
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-muted fst-italic text-center mb-0">No earnings in the last 6 months yet.</p>
+    {% endif %}
+  </div>
+
+  <div class="row g-4">
+
+    <!-- Earnings table -->
+    <div class="col-lg-8">
+      <div class="card-main p-4">
+        <h6 class="fw-bold mb-3" style="color:#334155;">
+          <i class="bi bi-receipt-cutoff text-success me-2"></i>Recent Payments
+        </h6>
+        {% if earned_payments %}
+        <div class="table-responsive">
+          <table class="table table-sm align-middle" style="font-size:0.875rem;">
+            <thead>
+              <tr style="color:#64748b;font-size:0.78rem;">
+                <th>Job</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Fee</th>
+                <th>Net</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in earned_payments %}
+              <tr>
+                <td>
+                  {% if p.contract and p.contract.job %}
+                  <a href="{% url 'jobs:detail' p.contract.job.pk %}" class="text-decoration-none fw-semibold" style="color:#0f172a;">
+                    {{ p.contract.job.title|truncatechars:30 }}
+                  </a>
+                  {% else %}<span class="text-muted">—</span>{% endif %}
+                </td>
+                <td class="text-muted">{{ p.created_at|date:"d M Y" }}</td>
+                <td class="fw-semibold" style="color:#059669;">₹{{ p.amount|floatformat:0 }}</td>
+                <td style="color:#dc2626;">₹{{ p.fee|floatformat:0 }}</td>
+                <td class="fw-bold">₹{{ p.amount|add:"-"|floatformat:0 }}</td>
+                <td>
+                  {% if p.contract %}
+                  <a href="{% url 'payments:invoice' p.contract.pk %}" class="btn btn-outline-secondary btn-sm" style="border-radius:6px;font-size:0.75rem;" target="_blank">
+                    <i class="bi bi-download"></i> Invoice
+                  </a>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <p class="text-muted fst-italic text-center mb-0">No completed payments yet. Complete your first contract to see earnings here.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Pending Contracts -->
+    <div class="col-lg-4">
+      <div class="card-main p-4">
+        <h6 class="fw-bold mb-3" style="color:#334155;">
+          <i class="bi bi-hourglass-split text-warning me-2"></i>Pending Contracts
+        </h6>
+        {% for c in pending_contracts %}
+        <div class="d-flex align-items-center justify-content-between mb-3 pb-3 border-bottom">
+          <div>
+            <div class="fw-semibold" style="font-size:0.85rem;color:#0f172a;">{{ c.job.title|truncatechars:25 }}</div>
+            <div class="text-muted" style="font-size:0.75rem;">₹{{ c.agreed_amount }}</div>
+          </div>
+          <a href="{% url 'contracts:detail' c.pk %}" class="btn btn-sm btn-outline-warning" style="border-radius:6px;font-size:0.75rem;">
+            View
+          </a>
+        </div>
+        {% empty %}
+        <p class="text-muted fst-italic" style="font-size:0.85rem;">No active pending contracts.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</div>
+{% endblock %}

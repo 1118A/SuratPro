@@ -1,0 +1,27 @@
+{% load static %}
+{% with type=notif.notif_type %}
+<div class="card-main mb-2 p-3 d-flex align-items-start gap-3"
+     style="border-radius:12px;border-left:3px solid
+     {% if type == 'success' %}#059669{% elif type == 'warning' %}#d97706{% elif type == 'error' %}#dc2626{% else %}#2563eb{% endif %};
+     background:{% if not notif.is_read %}#eff6ff{% else %}#fff{% endif %};">
+  <!-- Icon -->
+  <div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+              background:{% if type == 'success' %}#d1fae5{% elif type == 'warning' %}#fef3c7{% elif type == 'error' %}#fee2e2{% else %}#dbeafe{% endif %};">
+    <i class="bi
+      {% if type == 'success' %}bi-check-circle-fill text-success
+      {% elif type == 'warning' %}bi-exclamation-circle-fill text-warning
+      {% elif type == 'error' %}bi-exclamation-triangle-fill text-danger
+      {% else %}bi-info-circle-fill text-primary{% endif %}"
+      style="font-size:1rem;"></i>
+  </div>
+  <!-- Body -->
+  <div class="flex-grow-1 min-width-0">
+    <div class="fw-semibold" style="color:#0f172a;font-size:0.875rem;">{{ notif.title }}</div>
+    <div style="color:#64748b;font-size:0.82rem;margin-top:2px;">{{ notif.message }}</div>
+    <div style="color:#94a3b8;font-size:0.75rem;margin-top:4px;">{{ notif.created_at|timesince }} ago</div>
+  </div>
+  {% if notif.link %}
+  <a href="{{ notif.link }}" class="btn btn-sm btn-outline-primary" style="border-radius:8px;font-size:0.75rem;flex-shrink:0;">View</a>
+  {% endif %}
+</div>
+{% endwith %}

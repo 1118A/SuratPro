@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if editing %}Edit Job Listing — SuratPro{% else %}Post a New Job — Find Freelancers Fast{% endif %}{% endblock %}
+
+{% block content %}
+<div style="background:#f1f5f9;min-height:calc(100vh - 68px);padding:2.5rem 0;">
+<div class="container" style="max-width:740px;">
+
+    <div class="mb-4">
+        <div class="section-label">{% if editing %}Edit{% else %}New{% endif %} Job</div>
+        <h1 class="section-title mt-1" style="font-size:1.5rem;">
+            {% if editing %}Edit "{{ job.title }}"{% else %}Post a New Job{% endif %}
+        </h1>
+        <p style="color:#64748b;font-size:0.875rem;margin-top:0.3rem;">
+            Fill in the details below. The more specific you are, the better proposals you'll receive.
+        </p>
+    </div>
+
+    <div class="card-main p-4">
+    <form method="post" id="job-post-form">
+        {% csrf_token %}
+
+        <!-- Title -->
+        <div class="mb-4">
+            <label class="form-label fw-semibold">Job Title <span style="color:#ef4444;">*</span></label>
+            {{ form.title }}
+            {% if form.title.errors %}
+            <div class="text-danger mt-1" style="font-size:0.8rem;">{{ form.title.errors.0 }}</div>
+            {% endif %}
+            <div style="font-size:0.78rem;color:#94a3b8;margin-top:3px;">Be specific — e.g. "React Developer for SaaS Dashboard"</div>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-4">
+            <label class="form-label fw-semibold">Project Description <span style="color:#ef4444;">*</span></label>
+            {{ form.description }}
+            {% if form.description.errors %}
+            <div class="text-danger mt-1" style="font-size:0.8rem;">{{ form.description.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Budget -->
+        <div class="mb-4">
+            <label class="form-label fw-semibold">Budget</label>
+            <div class="row g-3">
+                <div class="col-sm-4">
+                    <label style="font-size:0.78rem;color:#64748b;margin-bottom:4px;">Type</label>
+                    {{ form.budget_type }}
+                </div>
+                <div class="col-sm-4">
+                    <label style="font-size:0.78rem;color:#64748b;margin-bottom:4px;">Min (₹)</label>
+                    {{ form.budget_min }}
+                    {% if form.budget_min.errors %}
+                    <div class="text-danger mt-1" style="font-size:0.8rem;">{{ form.budget_min.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-sm-4">
+                    <label style="font-size:0.78rem;color:#64748b;margin-bottom:4px;">Max (₹)</label>
+                    {{ form.budget_max }}
+                    {% if form.budget_max.errors %}
+                    <div class="text-danger mt-1" style="font-size:0.8rem;">{{ form.budget_max.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Deadline + Experience -->
+        <div class="row g-3 mb-4">
+            <div class="col-sm-6">
+                <label class="form-label fw-semibold">Deadline</label>
+                {{ form.deadline }}
+                {% if form.deadline.errors %}
+                <div class="text-danger mt-1" style="font-size:0.8rem;">{{ form.deadline.errors.0 }}</div>
+                {% endif %}
+            </div>
+            <div class="col-sm-6">
+                <label class="form-label fw-semibold">Experience Level</label>
+                {{ form.experience_level }}
+            </div>
+        </div>
+
+        <!-- Skills -->
+        <div class="mb-4">
+            <label class="form-label fw-semibold">
+                Required Skills
+                <span style="font-weight:400;color:#94a3b8;">(optional)</span>
+                <span id="skill-count-badge"
+                      style="display:none;margin-left:6px;background:#2563eb;color:#fff;border-radius:20px;font-size:11px;font-weight:700;padding:2px 9px;">
+                    <span id="skill-count">0</span> selected
+                </span>
+            </label>
+
+            <!-- Live search input -->
+            <input type="text" id="skill-search"
+                   placeholder="Type to filter skills…"
+                   autocomplete="off"
+                   style="width:100%;margin-bottom:6px;padding:0.5rem 0.85rem;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.875rem;outline:none;transition:border-color 0.2s;"
+                   onfocus="this.style.borderColor='#2563eb'"
+                   onblur="this.style.borderColor='#e2e8f0'">
+
+            <div id="skills-list"
+                 style="max-height:220px;overflow-y:auto;border:1.5px solid #e2e8f0;border-radius:10px;padding:0.6rem 1rem;">
+                {% for checkbox in form.skills_required %}
+                <div class="form-check skill-item mb-1"
+                     data-label="{{ checkbox.choice_label|lower }}">
+                    {{ checkbox.tag }}
+                    <label class="form-check-label"
+                           for="{{ checkbox.id_for_label }}"
+                           style="font-size:0.875rem;cursor:pointer;">
+                        {{ checkbox.choice_label }}
+                    </label>
+                </div>
+                {% empty %}
+                <span style="font-size:0.83rem;color:#94a3b8;">No skills available.</span>
+                {% endfor %}
+            </div>
+
+            {% if form.skills_required.errors %}
+            <div class="text-danger mt-1" style="font-size:0.8rem;">{{ form.skills_required.errors.0 }}</div>
+            {% endif %}
+            <div style="font-size:0.78rem;color:#94a3b8;margin-top:4px;">Select all that apply. You can leave this empty.</div>
+        </div>
+
+
+        <!-- Non-field errors -->
+        {% if form.non_field_errors %}
+        <div class="mb-3 p-3 rounded-3" style="background:#fee2e2;border:1px solid #fecaca;">
+            {% for error in form.non_field_errors %}
+            <p class="mb-0" style="font-size:0.83rem;color:#dc2626;">{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Submit -->
+        <div class="d-flex gap-3 justify-content-end">
+            <a href="{% url 'jobs:list' %}"
+               style="padding:0.7rem 1.5rem;border:1.5px solid #e2e8f0;border-radius:10px;font-weight:600;font-size:0.875rem;color:#64748b;text-decoration:none;background:#fff;">
+                Cancel
+            </a>
+            <button type="submit" id="job-submit-btn" class="btn-primary-main">
+                {% if editing %}
+                <i class="bi bi-check-lg" id="submit-icon"></i>
+                <span id="submit-text">Save Changes</span>
+                {% else %}
+                <i class="bi bi-send" id="submit-icon"></i>
+                <span id="submit-text">Post Job</span>
+                {% endif %}
+            </button>
+        </div>
+    </form>
+    </div>
+
+</div>
+</div>
+
+<script>
+// ---- Anti double-submit ----
+(function () {
+    var form      = document.getElementById('job-post-form');
+    var btn       = document.getElementById('job-submit-btn');
+    var icon      = document.getElementById('submit-icon');
+    var label     = document.getElementById('submit-text');
+    var submitted = false;
+
+    form.addEventListener('submit', function () {
+        if (submitted) return false;
+        submitted = true;
+        btn.disabled      = true;
+        btn.style.opacity = '0.75';
+        icon.className    = 'bi bi-hourglass-split';
+        label.textContent = 'Posting…';
+    });
+})();
+
+// ---- Skills live search filter ----
+(function () {
+    var searchInput = document.getElementById('skill-search');
+    var items       = document.querySelectorAll('.skill-item');
+    var badge       = document.getElementById('skill-count-badge');
+    var countSpan   = document.getElementById('skill-count');
+
+    function updateCount() {
+        var checked = document.querySelectorAll('#skills-list input[type="checkbox"]:checked').length;
+        countSpan.textContent = checked;
+        badge.style.display   = checked > 0 ? 'inline-block' : 'none';
+    }
+
+    // Filter on typing
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            var q = this.value.toLowerCase().trim();
+            items.forEach(function (item) {
+                var label = item.getAttribute('data-label') || '';
+                item.style.display = (q === '' || label.indexOf(q) !== -1) ? '' : 'none';
+            });
+        });
+    }
+
+    // Count on checkbox change
+    items.forEach(function (item) {
+        var cb = item.querySelector('input[type="checkbox"]');
+        if (cb) cb.addEventListener('change', updateCount);
+    });
+
+    // Initial count (edit mode may have pre-selected items)
+    updateCount();
+})();
+</script>
+{% endblock %}
+

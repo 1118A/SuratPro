@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{% block title %}Find Freelance Jobs in Surat — Browse Open Projects{% endblock %}
+{% block meta_description %}Browse open freelance jobs. Filter by skill, budget, and experience level.{% endblock %}
+
+{% block content %}
+<div style="background:#f1f5f9;min-height:calc(100vh - 68px);padding:2.5rem 0;">
+<div class="container">
+
+    <!-- Page Header -->
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
+        <div>
+            <div class="section-label">Job Board</div>
+            <h1 class="section-title mt-1" style="font-size:1.6rem;">Find Freelance Work</h1>
+        </div>
+        {% if user.is_authenticated and user.is_client %}
+        <a href="{% url 'jobs:post' %}" class="btn-primary-main">
+            <i class="bi bi-plus-lg"></i> Post a Job
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="row g-4">
+
+        <!-- FILTERS SIDEBAR -->
+        <div class="col-lg-3">
+            <div class="card-main p-4" style="position:sticky;top:80px;">
+                <form method="get" id="filter-form">
+                    <!-- Search -->
+                    <div class="mb-4">
+                        <label class="form-label fw-700" style="font-size:0.78rem;text-transform:uppercase;letter-spacing:1px;color:#64748b;">Search</label>
+                        <div style="position:relative;">
+                            <i class="bi bi-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8;"></i>
+                            <input type="text" name="q" value="{{ q }}"
+                                   class="form-control" placeholder="Keywords…"
+                                   style="padding-left:2.1rem;border-radius:10px;border:1.5px solid #e2e8f0;">
+                        </div>
+                    </div>
+
+                    <!-- Experience Level -->
+                    <div class="mb-4">
+                        <label class="form-label fw-700" style="font-size:0.78rem;text-transform:uppercase;letter-spacing:1px;color:#64748b;">Experience</label>
+                        {% for val, label in exp_choices %}
+                        <div class="form-check mb-1">
+                            <input class="form-check-input" type="radio" name="exp"
+                                   id="exp_{{ val }}" value="{{ val }}"
+                                   {% if exp == val %}checked{% endif %}
+                                   onchange="document.getElementById('filter-form').submit()">
+                            <label class="form-check-label" for="exp_{{ val }}" style="font-size:0.875rem;">{{ label }}</label>
+                        </div>
+                        {% endfor %}
+                        {% if exp %}
+                        <a href="?q={{ q }}" class="d-block mt-1" style="font-size:0.78rem;color:#94a3b8;">Clear filter</a>
+                        {% endif %}
+                    </div>
+
+                    <!-- Sort -->
+                    <div class="mb-4">
+                        <label class="form-label fw-700" style="font-size:0.78rem;text-transform:uppercase;letter-spacing:1px;color:#64748b;">Sort By</label>
+                        <select name="sort" class="form-select form-select-sm" onchange="this.form.submit()" style="border-radius:8px;">
+                            <option value="-created_at" {% if sort == '-created_at' %}selected{% endif %}>Newest First</option>
+                            <option value="budget_high"  {% if sort == 'budget_high' %}selected{% endif %}>Highest Budget</option>
+                            <option value="budget_low"   {% if sort == 'budget_low' %}selected{% endif %}>Lowest Budget</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-primary-main w-100" style="justify-content:center;">
+                        Apply Filters
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- JOB LISTINGS -->
+        <div class="col-lg-9">
+
+            {% if page_obj.object_list %}
+            <div class="d-flex flex-column gap-3">
+                {% for job in page_obj %}
+                <a href="{% url 'jobs:detail' job.pk %}" class="text-decoration-none">
+                <div class="card-main p-4" style="transition:all 0.2s ease;cursor:pointer;"
+                     onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 28px rgba(15,23,42,0.1)'"
+                     onmouseout="this.style.transform='';this.style.boxShadow=''">
+
+                    <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
+                        <div class="flex-grow-1">
+                            <!-- Title + status -->
+                            <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                                <h2 style="font-size:1.05rem;font-weight:700;color:#0f172a;margin:0;">{{ job.title }}</h2>
+                                <span style="background:#d1fae5;color:#065f46;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;">Open</span>
+                            </div>
+
+                            <!-- Client + location + date -->
+                            <div style="font-size:0.8rem;color:#94a3b8;margin-bottom:0.75rem;">
+                                <i class="bi bi-person-circle me-1"></i>{{ job.client.get_full_name|default:job.client.username }}
+                                &nbsp;·&nbsp;
+                                <i class="bi bi-clock me-1"></i>{{ job.created_at|timesince }} ago
+                                {% if job.deadline %}
+                                &nbsp;·&nbsp;
+                                <i class="bi bi-calendar me-1"></i>Deadline {{ job.deadline|date:"M d, Y" }}
+                                {% endif %}
+                            </div>
+
+                            <!-- Description snippet -->
+                            <p style="font-size:0.875rem;color:#475569;margin-bottom:0.85rem;line-height:1.6;">
+                                {{ job.description|truncatewords:30 }}
+                            </p>
+
+                            <!-- Skills -->
+                            {% if job.skills_required.all %}
+                            <div class="d-flex flex-wrap gap-1">
+                                {% for skill in job.skills_required.all|slice:":6" %}
+                                <span style="background:#eff6ff;color:#1d4ed8;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;">{{ skill.name }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Budget + proposals -->
+                        <div class="text-end" style="min-width:130px;flex-shrink:0;">
+                            <div style="font-size:1.1rem;font-weight:800;color:#0f172a;">{{ job.budget_display }}</div>
+                            <div style="font-size:0.78rem;color:#94a3b8;margin-top:2px;">
+                                {{ job.budget_type|capfirst }}
+                            </div>
+                            <div style="font-size:0.78rem;color:#64748b;margin-top:8px;">
+                                <i class="bi bi-file-text me-1"></i>{{ job.proposal_count }} proposal{{ job.proposal_count|pluralize }}
+                            </div>
+                            <div style="font-size:0.78rem;color:#7c3aed;margin-top:4px;font-weight:600;">
+                                {{ job.experience_level|capfirst }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </a>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <div class="d-flex justify-content-center gap-2 mt-4 flex-wrap">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}&q={{ q }}&exp={{ exp }}&sort={{ sort }}"
+                   style="padding:0.45rem 1rem;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.83rem;font-weight:600;color:#2563eb;text-decoration:none;background:#fff;">
+                    &larr; Prev
+                </a>
+                {% endif %}
+                <span style="padding:0.45rem 1rem;background:#2563eb;color:#fff;border-radius:8px;font-size:0.83rem;font-weight:600;">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&q={{ q }}&exp={{ exp }}&sort={{ sort }}"
+                   style="padding:0.45rem 1rem;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.83rem;font-weight:600;color:#2563eb;text-decoration:none;background:#fff;">
+                    Next &rarr;
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% else %}
+            <div class="card-main p-5 text-center">
+                <div style="font-size:3rem;margin-bottom:1rem;">📭</div>
+                <h3 style="font-size:1.1rem;font-weight:700;color:#0f172a;">No jobs found</h3>
+                <p style="color:#64748b;font-size:0.875rem;">Try adjusting your filters or check back later.</p>
+                {% if user.is_authenticated and user.is_client %}
+                <a href="{% url 'jobs:post' %}" class="btn-primary-main mt-3">Post the first job</a>
+                {% endif %}
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

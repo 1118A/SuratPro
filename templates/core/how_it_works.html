@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+
+{% block title %}How SuratPro Works — Post a Job, Hire & Get Paid{% endblock %}
+{% block meta_description %}Learn how SuratPro connects freelancers and clients in Surat through a simple, secure, milestone-based process.{% endblock %}
+
+{% block content %}
+<div class="hiw-page">
+    <div class="container">
+
+        <!-- Hero Header -->
+        <div class="hiw-hero">
+            <div class="section-label">Simple Process</div>
+            <h1 class="section-title mt-1">How SuratPro Works</h1>
+            <p class="section-subtitle mt-2">
+                From signing up to getting paid — everything is transparent,
+                secure, and built around your success.
+            </p>
+        </div>
+
+        <!-- Two-column step layout -->
+        <div class="row g-5">
+
+            <!-- FOR FREELANCERS -->
+            <div class="col-lg-6">
+                <div class="hiw-section-header">
+                    <div class="hiw-section-icon" style="background:#dbeafe;">
+                        <i class="bi bi-laptop" style="color:#2563eb;"></i>
+                    </div>
+                    <div>
+                        <div class="hiw-section-label">For Freelancers</div>
+                        <div style="font-size:0.825rem;color:#64748b;margin-top:1px;">Find great work, get paid securely</div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column gap-3">
+                    <div class="hiw-step-card">
+                        <div class="hiw-step-num freelancer">1</div>
+                        <div>
+                            <div class="hiw-step-title">Create Your Profile</div>
+                            <p class="hiw-step-desc">
+                                Build a standout profile with your skills, portfolio, work history,
+                                and hourly rate. First impressions matter.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="hiw-step-card">
+                        <div class="hiw-step-num freelancer">2</div>
+                        <div>
+                            <div class="hiw-step-title">Browse &amp; Submit Proposals</div>
+                            <p class="hiw-step-desc">
+                                Search jobs that match your expertise. Write targeted proposals
+                                with your timeline and bid to win the project.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="hiw-step-card">
+                        <div class="hiw-step-num freelancer">3</div>
+                        <div>
+                            <div class="hiw-step-title">Work Under a Contract</div>
+                            <p class="hiw-step-desc">
+                                Once hired, a milestone-based contract is created. Deliver
+                                work per milestone so expectations are always clear.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="hiw-step-card">
+                        <div class="hiw-step-num freelancer">4</div>
+                        <div>
+                            <div class="hiw-step-title">Deliver &amp; Get Paid</div>
+                            <p class="hiw-step-desc">
+                                Submit milestone deliverables for client approval. Payment is
+                                released from escrow instantly upon approval. No chasing invoices.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <a href="{% url 'accounts:register' %}?role=freelancer" class="btn-primary-main">
+                        <i class="bi bi-lightning-fill"></i> Join as Freelancer
+                    </a>
+                </div>
+            </div>
+
+            <!-- FOR CLIENTS -->
+            <div class="col-lg-6">
+                <div class="hiw-section-header">
+                    <div class="hiw-section-icon" style="background:#ede9fe;">
+                        <i class="bi bi-building" style="color:#7c3aed;"></i>
+                    </div>
+                    <div>
+                        <div class="hiw-section-label">For Clients</div>
+                        <div style="font-size:0.825rem;color:#64748b;margin-top:1px;">Hire top talent, manage with confidence</div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column gap-3">
+                    <div class="hiw-step-card">
+                        <div class="hiw-step-num client">1</div>
+                        <div>
+                            <div class="hiw-step-title">Post a Job</div>
+                            <p class="hiw-step-desc">
+                                Describe your project in detail — scope, budget, timeline,
+                                and required skills. It takes less than 5 minutes.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="hiw-step-card">
+                        <div class="hiw-step-num client">2</div>
+                        <div>
+                            <div class="hiw-step-title">Review Proposals</div>
+                            <p class="hiw-step-desc">
+                                Receive competitive proposals from verified freelancers.
+                                Compare ratings, portfolios, and bids side by side.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="hiw-step-card">
+                        <div class="hiw-step-num client">3</div>
+                        <div>
+                            <div class="hiw-step-title">Hire &amp; Set Milestones</div>
+                            <p class="hiw-step-desc">
+                                Accept a proposal and fund the escrow. Break the project
+                                into milestones so both sides stay aligned throughout.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="hiw-step-card">
+                        <div class="hiw-step-num client">4</div>
+                        <div>
+                            <div class="hiw-step-title">Approve &amp; Release Payment</div>
+                            <p class="hiw-step-desc">
+                                Review each milestone delivery. Approve to release escrow funds —
+                                or request changes. You're always in control.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <a href="{% url 'accounts:register' %}?role=client" class="btn-primary-main" style="background:var(--secondary);">
+                        <i class="bi bi-building"></i> Hire Talent Now
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Trust badges row -->
+        <div class="row g-3 mt-5">
+            <div class="col-12">
+                <div style="text-align:center;font-size:0.78rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#94a3b8;margin-bottom:1.5rem;">
+                    Why SuratPro
+                </div>
+            </div>
+            {% for item in trust_items %}
+            <div class="col-6 col-md-3">
+                <div class="card-main p-3 text-center h-100">
+                    <div style="font-size:1.5rem;color:var(--primary);margin-bottom:0.5rem;">
+                        <i class="bi {{ item.icon }}"></i>
+                    </div>
+                    <div style="font-size:0.875rem;font-weight:700;color:#0f172a;">{{ item.title }}</div>
+                    <div style="font-size:0.78rem;color:#64748b;margin-top:2px;">{{ item.desc }}</div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-6 col-md-3">
+                <div class="card-main p-3 text-center h-100">
+                    <div style="font-size:1.5rem;color:var(--primary);margin-bottom:0.5rem;"><i class="bi bi-shield-check"></i></div>
+                    <div style="font-size:0.875rem;font-weight:700;color:#0f172a;">Escrow Protection</div>
+                    <div style="font-size:0.78rem;color:#64748b;margin-top:2px;">Funds secured until work is approved</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card-main p-3 text-center h-100">
+                    <div style="font-size:1.5rem;color:var(--primary);margin-bottom:0.5rem;"><i class="bi bi-patch-check"></i></div>
+                    <div style="font-size:0.875rem;font-weight:700;color:#0f172a;">Verified Profiles</div>
+                    <div style="font-size:0.78rem;color:#64748b;margin-top:2px;">ID-verified freelancers and clients</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card-main p-3 text-center h-100">
+                    <div style="font-size:1.5rem;color:var(--primary);margin-bottom:0.5rem;"><i class="bi bi-chat-dots"></i></div>
+                    <div style="font-size:0.875rem;font-weight:700;color:#0f172a;">Built-in Messaging</div>
+                    <div style="font-size:0.78rem;color:#64748b;margin-top:2px;">Communicate directly on the platform</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card-main p-3 text-center h-100">
+                    <div style="font-size:1.5rem;color:var(--primary);margin-bottom:0.5rem;"><i class="bi bi-star"></i></div>
+                    <div style="font-size:0.875rem;font-weight:700;color:#0f172a;">Honest Reviews</div>
+                    <div style="font-size:0.78rem;color:#64748b;margin-top:2px;">Transparent ratings build real trust</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- CTA Block -->
+        <div class="hiw-cta-block">
+            <h2 style="font-size:1.75rem;font-weight:800;color:#fff;letter-spacing:-0.5px;">
+                Ready to Get Started?
+            </h2>
+            <p style="color:#94a3b8;font-size:0.95rem;margin-top:0.5rem;max-width:420px;margin-left:auto;margin-right:auto;">
+                Join over 12,000 freelancers and 3,000 companies who already trust SuratPro.
+            </p>
+            <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
+                <a href="{% url 'accounts:register' %}?role=freelancer" class="btn-primary-main">
+                    Find Work
+                </a>
+                <a href="{% url 'accounts:register' %}?role=client"
+                   style="padding:0.7rem 1.75rem;border-radius:50px;font-weight:600;font-size:0.9rem;background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.2);color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:0.5rem;transition:all 0.2s;"
+                   onmouseover="this.style.background='rgba(255,255,255,0.18)'"
+                   onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                    Hire Talent
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

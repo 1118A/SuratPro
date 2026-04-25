@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  body { font-family: Arial, sans-serif; background: #f8fafc; margin: 0; padding: 20px; }
+  .email-wrap { max-width: 600px; margin: 0 auto; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+  .email-header { background: #059669; padding: 28px 32px; }
+  .email-header h1 { color: #fff; margin: 0; font-size: 1.3rem; }
+  .email-header p { color: rgba(255,255,255,0.8); margin: 4px 0 0; font-size: 0.85rem; }
+  .email-body { padding: 28px 32px; }
+  .detail-box { background: #f0fdf4; border-radius: 8px; padding: 16px 20px; margin: 16px 0; border-left: 4px solid #059669; }
+  .detail-box p { margin: 6px 0; font-size: 0.9rem; color: #334155; }
+  .detail-box strong { color: #0f172a; }
+  .btn { display: inline-block; background: #059669; color: #fff; text-decoration: none; padding: 12px 28px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; margin-top: 16px; }
+  .email-footer { background: #f8fafc; padding: 16px 32px; text-align: center; font-size: 0.78rem; color: #94a3b8; }
+</style>
+</head>
+<body>
+<div class="email-wrap">
+  <div class="email-header">
+    <h1>🎉 Proposal Accepted!</h1>
+    <p>SuratPro — Surat's Freelance Marketplace</p>
+  </div>
+  <div class="email-body">
+    <p>Congratulations <strong>{{ proposal.freelancer.get_full_name|default:proposal.freelancer.username }}</strong>!</p>
+    <p>Your proposal for the job <strong>"{{ job.title }}"</strong> has been accepted by the client.</p>
+    <div class="detail-box">
+      <p><strong>Job:</strong> {{ job.title }}</p>
+      <p><strong>Client:</strong> {{ job.client.get_full_name|default:job.client.username }}</p>
+      <p><strong>Your Bid:</strong> ₹{{ proposal.bid_amount }}</p>
+    </div>
+    <p>A contract has been created. Head to your contracts page to get started!</p>
+    <a href="http://localhost:8000/contracts/" class="btn">View My Contracts</a>
+  </div>
+  <div class="email-footer">
+    © SuratPro &bull; Surat, Gujarat, India<br>
+    You received this because you submitted a proposal on SuratPro.
+  </div>
+</div>
+</body>
+</html>

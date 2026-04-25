@@ -1,0 +1,767 @@
+/*
+ * SuratPro — Custom Admin Panel CSS
+ * Overrides Jazzmin "darkly" theme to match the website palette:
+ *   Primary Blue:  #2563eb
+ *   Dark Navy:     #0f172a
+ *   Purple:        #7c3aed
+ *   Sidebar dark:  #111827
+ */
+
+/* ── Font Awesome 6 (fixes icons showing as □ squares) ── */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+/* =====================================================
+   FONT EVERYWHERE
+   ===================================================== */
+*,
+body,
+.content-wrapper,
+.main-header,
+.main-sidebar,
+.nav-sidebar .nav-link,
+.card,
+.table,
+input, select, textarea, button {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+    letter-spacing: -0.01em;
+}
+
+/* =====================================================
+   KILL ALL TEAL / GREEN — force our primary blue
+   AdminLTE "darkly" uses #375a7f (blue) and #00bc8c (green/teal).
+   We override every instance.
+   ===================================================== */
+
+/* CSS variable override where supported */
+:root {
+    --primary:          #2563eb !important;
+    --primary-dark:     #1d4ed8 !important;
+    --accent:           #2563eb !important;
+    --success:          #059669 !important;
+    --info:             #7c3aed !important;
+}
+
+/* AdminLTE accent colour classes */
+.bg-teal, .bg-cyan, .bg-green,
+.accent-teal, .accent-cyan, .accent-green {
+    background-color: #2563eb !important;
+}
+
+/* Any button that Jazzmin renders as teal/green */
+.btn-success:not(.btn-danger):not(.btn-warning) {
+    background-color: #2563eb !important;
+    border-color: #2563eb !important;
+    color: #fff !important;
+}
+.btn-success:hover {
+    background-color: #1d4ed8 !important;
+    border-color: #1d4ed8 !important;
+}
+
+/* Inline "Add" buttons on dashboard model list */
+.btn-xs.btn-success,
+td .addlink {
+    background: #2563eb !important;
+    border-color: #2563eb !important;
+}
+
+/* Save button */
+.submit-row input[type="submit"].default,
+.submit-row [type="submit"],
+input[name="_save"],
+.btn-primary {
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
+    border-color: #2563eb !important;
+    color: #fff !important;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.3) !important;
+    transition: all 0.2s ease !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+}
+
+.submit-row input[type="submit"].default:hover,
+input[name="_save"]:hover,
+.btn-primary:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 14px rgba(37,99,235,0.4) !important;
+}
+
+/* "Save and add another" / "Save and continue" links */
+.submit-row a,
+.submit-row p {
+    color: #2563eb !important;
+    font-weight: 500 !important;
+    font-size: 0.83rem !important;
+}
+
+/* Sidebar active / hover accent (AdminLTE uses sidebar-dark-{colour}) */
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active,
+.sidebar-dark-primary .nav-sidebar > .nav-item.menu-open > .nav-link,
+.sidebar-dark-teal .nav-sidebar > .nav-item > .nav-link.active {
+    background: linear-gradient(135deg, rgba(37,99,235,0.9), rgba(99,102,241,0.9)) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 12px rgba(37,99,235,0.3) !important;
+}
+
+/* Sidebar hover */
+.nav-sidebar .nav-item .nav-link:hover {
+    background: rgba(37,99,235,0.12) !important;
+    color: #c7d2fe !important;
+}
+
+/* Brand text / logo area */
+.brand-link,
+.main-sidebar .brand-link {
+    background: #0f172a !important;
+    border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+}
+
+.brand-link .brand-text {
+    color: #fff !important;
+    font-weight: 800 !important;
+    font-size: 1.1rem !important;
+}
+
+/* Any text-teal or text-success that's really an accent */
+a.text-success,
+.text-teal,
+.text-cyan {
+    color: #2563eb !important;
+}
+
+/* Changelist "Change" links */
+#result_list td a,
+.changelink,
+.results td a {
+    color: #2563eb !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+}
+
+#result_list td a:hover,
+.changelink:hover {
+    color: #1d4ed8 !important;
+    text-decoration: underline !important;
+}
+
+/* Pagination */
+.paginator a,
+.paginator .current {
+    color: #2563eb !important;
+}
+
+/* Filter sidebar selected */
+#changelist-filter ul li.selected a {
+    color: #2563eb !important;
+    font-weight: 700 !important;
+}
+
+#changelist-filter ul li a:hover {
+    color: #2563eb !important;
+}
+
+/* Object tools "Add" button */
+.object-tools a.addlink {
+    background: #2563eb !important;
+    color: #fff !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 0.78rem !important;
+    padding: 0.4rem 0.9rem !important;
+    text-decoration: none !important;
+    transition: background 0.2s !important;
+}
+
+.object-tools a.addlink:hover {
+    background: #1d4ed8 !important;
+}
+
+.object-tools a.viewsitelink,
+.object-tools a.historylink {
+    background: #1e293b !important;
+    color: #e2e8f0 !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    font-size: 0.78rem !important;
+    padding: 0.4rem 0.9rem !important;
+    text-decoration: none !important;
+}
+
+/* Checkbox accent colour */
+input[type="checkbox"] {
+    accent-color: #2563eb !important;
+}
+
+/* Focus ring */
+.form-control:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.15) !important;
+    outline: none !important;
+}
+
+/* =====================================================
+   TOP NAVBAR
+   ===================================================== */
+
+.main-header.navbar {
+    background: linear-gradient(90deg, #0f172a 0%, #1e3a8a 100%) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.4) !important;
+    min-height: 58px;
+    transition: box-shadow 0.2s ease;
+}
+
+.main-header .navbar-brand,
+.main-header .brand-text {
+    font-size: 1.1rem !important;
+    font-weight: 800 !important;
+    color: #fff !important;
+    letter-spacing: -0.3px;
+}
+
+.main-header .nav-link {
+    color: rgba(255,255,255,0.8) !important;
+    font-weight: 500 !important;
+    font-size: 0.875rem !important;
+    border-radius: 8px;
+    padding: 0.4rem 0.85rem !important;
+    transition: all 0.18s ease !important;
+}
+
+.main-header .nav-link:hover {
+    background: rgba(255,255,255,0.1) !important;
+    color: #fff !important;
+}
+
+/* Search box */
+.main-header .navbar-search-block .form-control,
+.main-header form[role="search"] .form-control {
+    background: rgba(255,255,255,0.1) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    border-radius: 8px !important;
+    color: #fff !important;
+    font-size: 0.875rem !important;
+}
+
+.main-header .navbar-search-block .form-control::placeholder {
+    color: rgba(255,255,255,0.4) !important;
+}
+
+/* =====================================================
+   LEFT SIDEBAR
+   ===================================================== */
+
+.main-sidebar {
+    background: #111827 !important;
+    box-shadow: 2px 0 16px rgba(0,0,0,0.35) !important;
+    width: 240px !important;
+    transition: width 0.2s ease !important;
+}
+
+/* Nav section headers */
+.nav-sidebar .nav-header {
+    color: rgba(148,163,184,0.65) !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 2px !important;
+    text-transform: uppercase !important;
+    padding: 1rem 1rem 0.3rem !important;
+}
+
+/* Nav items */
+.nav-sidebar .nav-item .nav-link {
+    color: #94a3b8 !important;
+    font-weight: 500 !important;
+    font-size: 0.865rem !important;
+    border-radius: 10px !important;
+    margin: 2px 0.5rem !important;
+    padding: 0.55rem 0.85rem !important;
+    transition: all 0.18s ease !important;
+}
+
+.nav-sidebar .nav-item .nav-link .nav-icon {
+    color: inherit !important;
+    font-size: 0.9rem !important;
+    width: 1.4rem !important;
+    transition: color 0.18s ease !important;
+}
+
+/* Sub-items */
+.nav-sidebar .nav-treeview .nav-link {
+    padding-left: 2rem !important;
+    font-size: 0.82rem !important;
+}
+
+/* User panel */
+.sidebar .user-panel {
+    border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+    padding: 0.9rem 1rem !important;
+}
+
+.sidebar .user-panel .info a {
+    color: #e2e8f0 !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+}
+
+.sidebar .user-panel img {
+    border: 2px solid rgba(99,102,241,0.5) !important;
+    transition: border-color 0.2s ease !important;
+}
+
+/* =====================================================
+   CONTENT AREA
+   ===================================================== */
+
+.content-wrapper {
+    background: #f1f5f9 !important;
+    transition: background 0.2s ease !important;
+}
+
+/* Breadcrumb bar */
+.content-header {
+    background: #fff !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    padding: 0.8rem 1.5rem !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
+}
+
+.content-header h1 {
+    font-size: 1.2rem !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    letter-spacing: -0.3px;
+}
+
+.content-header .breadcrumb-item { font-size: 0.8rem !important; color: #64748b !important; }
+.content-header .breadcrumb-item a { color: #2563eb !important; text-decoration: none !important; }
+.content-header .breadcrumb-item.active { color: #94a3b8 !important; }
+
+/* =====================================================
+   CARDS & MODULES
+   ===================================================== */
+
+.card,
+.module,
+fieldset.module {
+    background: #fff !important;
+    border: none !important;
+    border-radius: 14px !important;
+    box-shadow: 0 2px 12px rgba(15,23,42,0.07) !important;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease, transform 0.2s ease !important;
+}
+
+.card-header {
+    background: #fff !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    font-weight: 700 !important;
+    font-size: 0.9rem !important;
+    color: #0f172a !important;
+    padding: 1rem 1.25rem !important;
+}
+
+/* Fieldset tab-style headers */
+fieldset.module h2,
+.module > h2 {
+    background: transparent !important;
+    color: #0f172a !important;
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1.2px !important;
+    padding: 1rem 1.25rem !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    margin: 0 !important;
+}
+
+/* Dashboard model table (dark rows) */
+.card .card-body table tr:first-child {
+    border-radius: 8px !important;
+}
+
+/* =====================================================
+   TABLES
+   ===================================================== */
+
+#result_list,
+.results .table {
+    border-radius: 14px !important;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(15,23,42,0.06) !important;
+    background: #fff !important;
+    border: none !important;
+}
+
+#result_list thead th,
+.table thead th {
+    background: #0f172a !important;
+    color: #94a3b8 !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1.2px !important;
+    padding: 0.9rem 1rem !important;
+    border: none !important;
+    white-space: nowrap;
+}
+
+#result_list tbody tr {
+    border-bottom: 1px solid #f1f5f9 !important;
+    transition: background 0.12s ease !important;
+}
+
+#result_list tbody tr:hover {
+    background: #f8fafc !important;
+}
+
+#result_list td {
+    padding: 0.75rem 1rem !important;
+    font-size: 0.875rem !important;
+    color: #334155 !important;
+    border: none !important;
+    vertical-align: middle !important;
+}
+
+/* Paginator */
+.paginator {
+    background: #fff !important;
+    border-top: 1px solid #e2e8f0 !important;
+    padding: 0.7rem 1rem !important;
+    font-size: 0.83rem !important;
+    color: #64748b !important;
+}
+
+/* =====================================================
+   FORMS
+   ===================================================== */
+
+.form-control,
+.form-select,
+input[type="text"],
+input[type="email"],
+input[type="url"],
+input[type="number"],
+input[type="password"],
+select,
+textarea {
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    padding: 0.55rem 0.85rem !important;
+    font-size: 0.875rem !important;
+    color: #0f172a !important;
+    background: #fff !important;
+    transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+
+.form-row,
+.field-box {
+    padding: 0.5rem 0 !important;
+}
+
+label {
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    color: #374151 !important;
+}
+
+/* Required asterisk */
+.required > label::after,
+label.required::after {
+    color: #ef4444 !important;
+}
+
+/* Help text */
+.help {
+    font-size: 0.78rem !important;
+    color: #94a3b8 !important;
+    margin-top: 3px !important;
+}
+
+/* Form error */
+.errorlist li {
+    background: #fee2e2 !important;
+    color: #dc2626 !important;
+    border-radius: 6px !important;
+    padding: 4px 8px !important;
+    font-size: 0.8rem !important;
+    font-weight: 500 !important;
+    margin-bottom: 4px !important;
+}
+
+/* Submit row */
+.submit-row {
+    background: #f8fafc !important;
+    border-top: 1px solid #e2e8f0 !important;
+    border-radius: 0 0 14px 14px !important;
+    padding: 1rem 1.25rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    flex-wrap: wrap !important;
+}
+
+/* Delete button */
+.btn-danger,
+.deletelink,
+input[name="_delete"],
+.submit-row .deletelink {
+    background: #dc2626 !important;
+    border-color: #dc2626 !important;
+    color: #fff !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    transition: all 0.18s ease !important;
+}
+
+.deletelink:hover {
+    background: #b91c1c !important;
+    color: #fff !important;
+    text-decoration: none !important;
+}
+
+/* =====================================================
+   FILTER SIDEBAR
+   ===================================================== */
+
+#changelist-filter {
+    background: #fff !important;
+    border: none !important;
+    border-radius: 14px !important;
+    box-shadow: 0 2px 12px rgba(15,23,42,0.06) !important;
+    padding: 1.1rem !important;
+}
+
+#changelist-filter h2 {
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1.5px !important;
+    color: #0f172a !important;
+    background: transparent !important;
+    padding: 0 0 0.6rem !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    margin-bottom: 0.75rem !important;
+}
+
+#changelist-filter h3 {
+    font-size: 0.78rem !important;
+    font-weight: 700 !important;
+    color: #475569 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    margin: 0.85rem 0 0.3rem !important;
+}
+
+#changelist-filter ul { list-style: none !important; padding: 0 !important; margin: 0 !important; }
+
+#changelist-filter ul li a {
+    color: #64748b !important;
+    font-size: 0.83rem !important;
+    text-decoration: none !important;
+    padding: 2px 0 !important;
+    display: block;
+    transition: color 0.15s ease !important;
+}
+
+/* =====================================================
+   DATE HIERARCHY
+   ===================================================== */
+
+.xfull,
+div.xfull {
+    background: #fff !important;
+    border-radius: 10px !important;
+    padding: 0.6rem 1rem !important;
+    box-shadow: 0 1px 6px rgba(15,23,42,0.05) !important;
+    margin-bottom: 1rem !important;
+}
+
+.xfull a { color: #2563eb !important; text-decoration: none !important; }
+
+/* =====================================================
+   MESSAGES
+   ===================================================== */
+
+.messagelist li,
+.alert {
+    border-radius: 10px !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    padding: 0.75rem 1rem !important;
+    border: none !important;
+    border-left: 4px solid !important;
+}
+
+.messagelist li.success, .alert-success {
+    background: #d1fae5 !important; border-left-color: #059669 !important; color: #065f46 !important;
+}
+.messagelist li.error, .alert-danger {
+    background: #fee2e2 !important; border-left-color: #dc2626 !important; color: #7f1d1d !important;
+}
+.messagelist li.warning, .alert-warning {
+    background: #fef3c7 !important; border-left-color: #d97706 !important; color: #78350f !important;
+}
+
+/* =====================================================
+   DASHBOARD — Model table rows
+   ===================================================== */
+
+/* The dark table rows on the dashboard model list */
+.card .table tbody tr:nth-child(odd),
+.card .table tbody tr {
+    background: #1e293b !important;
+    border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+    transition: background 0.15s ease !important;
+}
+
+.card .table tbody tr:hover {
+    background: #263548 !important;
+}
+
+.card .table tbody tr td,
+.card .table tbody tr th,
+.card .table tbody tr td a {
+    color: #e2e8f0 !important;
+    font-size: 0.875rem !important;
+    padding: 0.7rem 1rem !important;
+    border: none !important;
+    vertical-align: middle !important;
+}
+
+.card .table tbody tr td a {
+    color: #93c5fd !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+}
+
+.card .table tbody tr td a:hover {
+    color: #fff !important;
+    text-decoration: underline !important;
+}
+
+/* =====================================================
+   FOOTER
+   ===================================================== */
+
+.main-footer {
+    background: #0f172a !important;
+    border-top: 1px solid rgba(255,255,255,0.05) !important;
+    color: #475569 !important;
+    font-size: 0.78rem !important;
+    padding: 0.7rem 1.5rem !important;
+}
+
+.main-footer a { color: #818cf8 !important; text-decoration: none !important; }
+.main-footer strong { color: #818cf8 !important; font-weight: 700 !important; }
+
+/* =====================================================
+   ADMIN LOGIN PAGE
+   ===================================================== */
+
+body.login {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #312e81 100%) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.login-box, .register-box { width: 400px !important; }
+
+.login-box-body,
+.login-card-body {
+    background: rgba(255,255,255,0.97) !important;
+    border-radius: 20px !important;
+    padding: 2.5rem 2rem !important;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.4) !important;
+}
+
+.login-box-msg {
+    font-size: 1.35rem !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    text-align: center;
+    padding-bottom: 0.4rem;
+}
+
+.login-box .input-group-text,
+.login-card .input-group-text {
+    background: #f1f5f9 !important;
+    border: 1.5px solid #e2e8f0 !important;
+    border-right: none !important;
+    color: #64748b !important;
+}
+
+/* Login submit */
+body.login .btn-primary,
+body.login [type="submit"] {
+    background: linear-gradient(135deg, #2563eb, #3b82f6) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    width: 100% !important;
+    padding: 0.75rem !important;
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    box-shadow: 0 4px 14px rgba(37,99,235,0.35) !important;
+}
+
+/* =====================================================
+   RECENT ACTIONS (dashboard sidebar)
+   ===================================================== */
+
+#recent-actions-module {
+    background: #fff !important;
+    border-radius: 14px !important;
+    box-shadow: 0 2px 12px rgba(15,23,42,0.06) !important;
+    padding: 1.25rem !important;
+    overflow: hidden;
+}
+
+#recent-actions-module h2 {
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    color: #0f172a !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1.5px !important;
+    background: transparent !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    padding: 0 0 0.75rem !important;
+    margin-bottom: 0.75rem !important;
+}
+
+#recent-actions-module .actionlist li {
+    padding: 0.45rem 0 !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    font-size: 0.83rem !important;
+    color: #475569 !important;
+    transition: color 0.15s ease !important;
+}
+
+#recent-actions-module .actionlist a {
+    color: #2563eb !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+}
+
+#recent-actions-module .actionlist a:hover {
+    text-decoration: underline !important;
+}
+
+/* Smooth transitions everywhere */
+a, button, input, .nav-link, .card, .small-box {
+    transition: all 0.18s ease !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #0f172a; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #2563eb; }

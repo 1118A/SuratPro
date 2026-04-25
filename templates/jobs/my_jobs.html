@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}My Posted Jobs — Manage Your Listings{% endblock %}
+
+{% block content %}
+<div style="background:#f1f5f9;min-height:calc(100vh - 68px);padding:2.5rem 0;">
+<div class="container">
+
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
+        <div>
+            <div class="section-label">Client Dashboard</div>
+            <h1 class="section-title mt-1" style="font-size:1.5rem;">My Jobs</h1>
+        </div>
+        <a href="{% url 'jobs:post' %}" class="btn-primary-main">
+            <i class="bi bi-plus-lg"></i> Post New Job
+        </a>
+    </div>
+
+    {% if jobs %}
+    <div class="d-flex flex-column gap-3">
+    {% for job in jobs %}
+    <div class="card-main p-4">
+        <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
+            <div class="flex-grow-1">
+                <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                    <a href="{% url 'jobs:detail' job.pk %}"
+                       style="font-size:1rem;font-weight:700;color:#0f172a;text-decoration:none;">
+                        {{ job.title }}
+                    </a>
+                    <span style="padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;
+                        {% if job.status == 'open' %}background:#d1fae5;color:#065f46;
+                        {% elif job.status == 'in_progress' %}background:#dbeafe;color:#1d4ed8;
+                        {% else %}background:#f1f5f9;color:#64748b;{% endif %}">
+                        {{ job.get_status_display }}
+                    </span>
+                </div>
+                <div style="font-size:0.8rem;color:#94a3b8;">
+                    Posted {{ job.created_at|timesince }} ago
+                    &nbsp;·&nbsp; {{ job.proposal_count }} proposal{{ job.proposal_count|pluralize }}
+                    &nbsp;·&nbsp; {{ job.views_count }} view{{ job.views_count|pluralize }}
+                </div>
+            </div>
+            <div class="d-flex gap-2" style="flex-shrink:0;">
+                <a href="{% url 'jobs:detail' job.pk %}"
+                   style="padding:0.4rem 1rem;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.83rem;font-weight:600;color:#334155;text-decoration:none;background:#fff;">
+                    View
+                </a>
+                <a href="{% url 'jobs:edit' job.pk %}"
+                   style="padding:0.4rem 1rem;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.83rem;font-weight:600;color:#334155;text-decoration:none;background:#fff;">
+                    Edit
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="card-main p-5 text-center">
+        <div style="font-size:3rem;margin-bottom:1rem;">💼</div>
+        <h2 style="font-size:1.1rem;font-weight:700;color:#0f172a;">No jobs posted yet</h2>
+        <p style="color:#64748b;font-size:0.875rem;margin-bottom:1.5rem;">Start hiring by posting your first job.</p>
+        <a href="{% url 'jobs:post' %}" class="btn-primary-main">Post a Job</a>
+    </div>
+    {% endif %}
+
+</div>
+</div>
+{% endblock %}

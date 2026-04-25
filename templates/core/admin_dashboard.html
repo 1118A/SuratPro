@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+
+{% block title %}Platform Analytics & Admin Dashboard{% endblock %}
+
+{% block content %}
+<div style="background:#f1f5f9;min-height:calc(100vh - 68px);padding:2.5rem 0;">
+<div class="container-fluid px-4">
+
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 fw-bold mb-1" style="color:#0f172a;">Platform Dashboard</h1>
+            <p class="text-muted mb-0">Real-time overview of SuratPro activity</p>
+        </div>
+        <span class="badge bg-danger px-3 py-2" style="font-size:0.85rem;">Staff Only</span>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100" style="border-radius:12px;border-left:4px solid #6366f1!important;">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-muted" style="font-size:0.8rem;font-weight:600;text-transform:uppercase;">Total Users</span>
+                        <div style="width:40px;height:40px;border-radius:10px;background:#e0e7ff;display:flex;align-items:center;justify-content:center;color:#4f46e5;">
+                            <i class="bi bi-people-fill fs-5"></i>
+                        </div>
+                    </div>
+                    <div class="h2 fw-bold mb-0" style="color:#0f172a;">{{ total_users }}</div>
+                    <div class="mt-2" style="font-size:0.8rem;color:#64748b;">
+                        <span class="text-primary fw-bold">{{ total_freelancers }}</span> freelancers &nbsp;·&nbsp;
+                        <span class="text-purple fw-bold" style="color:#7c3aed;">{{ total_clients }}</span> clients
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100" style="border-radius:12px;border-left:4px solid #10b981!important;">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-muted" style="font-size:0.8rem;font-weight:600;text-transform:uppercase;">Platform Revenue</span>
+                        <div style="width:40px;height:40px;border-radius:10px;background:#d1fae5;display:flex;align-items:center;justify-content:center;color:#059669;">
+                            <i class="bi bi-currency-rupee fs-5"></i>
+                        </div>
+                    </div>
+                    <div class="h2 fw-bold mb-0" style="color:#0f172a;">₹{{ total_revenue|floatformat:0 }}</div>
+                    <div class="mt-2" style="font-size:0.8rem;color:#64748b;">20% commission earned</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100" style="border-radius:12px;border-left:4px solid #3b82f6!important;">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-muted" style="font-size:0.8rem;font-weight:600;text-transform:uppercase;">Jobs Posted</span>
+                        <div style="width:40px;height:40px;border-radius:10px;background:#dbeafe;display:flex;align-items:center;justify-content:center;color:#2563eb;">
+                            <i class="bi bi-briefcase-fill fs-5"></i>
+                        </div>
+                    </div>
+                    <div class="h2 fw-bold mb-0" style="color:#0f172a;">{{ total_jobs }}</div>
+                    <div class="mt-2" style="font-size:0.8rem;color:#64748b;">
+                        <span class="text-success fw-bold">{{ total_jobs_open }}</span> open &nbsp;·&nbsp;
+                        <span class="text-warning fw-bold">{{ total_jobs_inprog }}</span> in progress
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100" style="border-radius:12px;border-left:4px solid #f59e0b!important;">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-muted" style="font-size:0.8rem;font-weight:600;text-transform:uppercase;">Contracts</span>
+                        <div style="width:40px;height:40px;border-radius:10px;background:#fef3c7;display:flex;align-items:center;justify-content:center;color:#d97706;">
+                            <i class="bi bi-file-earmark-text-fill fs-5"></i>
+                        </div>
+                    </div>
+                    <div class="h2 fw-bold mb-0" style="color:#0f172a;">{{ total_contracts }}</div>
+                    <div class="mt-2" style="font-size:0.8rem;color:#64748b;">
+                        <span class="text-success fw-bold">{{ total_contracts_active }}</span> active &nbsp;·&nbsp;
+                        <span class="text-primary fw-bold">{{ total_contracts_completed }}</span> done
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Status Bar Chart -->
+    <div class="row g-3 mb-4">
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius:12px;">
+                <div class="card-body p-4">
+                    <h6 class="fw-bold mb-4" style="color:#0f172a;">Job Status Breakdown</h6>
+                    {% if total_jobs > 0 %}
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span style="font-size:0.85rem;font-weight:600;color:#334155;">Open</span>
+                            <span class="text-success fw-bold" style="font-size:0.85rem;">{{ total_jobs_open }}</span>
+                        </div>
+                        <div style="height:8px;background:#f1f5f9;border-radius:4px;">
+                            <div style="height:8px;background:#10b981;border-radius:4px;width:{% widthratio total_jobs_open total_jobs 100 %}%;"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span style="font-size:0.85rem;font-weight:600;color:#334155;">In Progress</span>
+                            <span class="text-warning fw-bold" style="font-size:0.85rem;">{{ total_jobs_inprog }}</span>
+                        </div>
+                        <div style="height:8px;background:#f1f5f9;border-radius:4px;">
+                            <div style="height:8px;background:#f59e0b;border-radius:4px;width:{% widthratio total_jobs_inprog total_jobs 100 %}%;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span style="font-size:0.85rem;font-weight:600;color:#334155;">Closed</span>
+                            <span class="text-secondary fw-bold" style="font-size:0.85rem;">{{ total_jobs_closed }}</span>
+                        </div>
+                        <div style="height:8px;background:#f1f5f9;border-radius:4px;">
+                            <div style="height:8px;background:#94a3b8;border-radius:4px;width:{% widthratio total_jobs_closed total_jobs 100 %}%;"></div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center py-4">No jobs yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Signups -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm h-100" style="border-radius:12px;">
+                <div class="card-body p-4">
+                    <h6 class="fw-bold mb-3" style="color:#0f172a;">Recent Signups</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead>
+                                <tr style="font-size:0.75rem;color:#94a3b8;text-transform:uppercase;font-weight:700;">
+                                    <th class="border-0 pb-2">User</th>
+                                    <th class="border-0 pb-2">Role</th>
+                                    <th class="border-0 pb-2">Paid</th>
+                                    <th class="border-0 pb-2 text-end">Joined</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in recent_signups %}
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold" style="font-size:0.88rem;color:#0f172a;">{{ user.get_full_name|default:user.username }}</div>
+                                        <div class="text-muted" style="font-size:0.78rem;">{{ user.email }}</div>
+                                    </td>
+                                    <td>
+                                        <span style="font-size:0.75rem;padding:3px 8px;border-radius:20px;font-weight:700;
+                                            {% if user.is_freelancer %}background:#e0e7ff;color:#4f46e5;{% else %}background:#ede9fe;color:#7c3aed;{% endif %}">
+                                            {{ user.get_role_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if user.has_paid_registration %}
+                                        <i class="bi bi-check-circle-fill text-success"></i>
+                                        {% else %}
+                                        <i class="bi bi-x-circle-fill text-danger"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end text-muted" style="font-size:0.8rem;">{{ user.date_joined|date:"M d, Y" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Payments -->
+    <div class="card border-0 shadow-sm" style="border-radius:12px;">
+        <div class="card-body p-4">
+            <h6 class="fw-bold mb-3" style="color:#0f172a;">Recent Transactions</h6>
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead>
+                        <tr style="font-size:0.75rem;color:#94a3b8;text-transform:uppercase;font-weight:700;">
+                            <th class="border-0 pb-2">Date</th>
+                            <th class="border-0 pb-2">User</th>
+                            <th class="border-0 pb-2">Type</th>
+                            <th class="border-0 pb-2">Contract</th>
+                            <th class="border-0 pb-2 text-end">Amount</th>
+                            <th class="border-0 pb-2 text-end">Fee</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in recent_payments %}
+                        <tr>
+                            <td class="text-muted" style="font-size:0.82rem;">{{ payment.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                <div class="fw-bold" style="font-size:0.88rem;color:#0f172a;">{{ payment.user.username }}</div>
+                            </td>
+                            <td>
+                                <span style="font-size:0.75rem;padding:3px 8px;border-radius:20px;font-weight:700;
+                                    {% if payment.payment_type == 'registration' %}background:#e0e7ff;color:#4f46e5;
+                                    {% elif payment.payment_type == 'project' %}background:#dbeafe;color:#1d4ed8;
+                                    {% else %}background:#d1fae5;color:#065f46;{% endif %}">
+                                    {{ payment.get_payment_type_display }}
+                                </span>
+                            </td>
+                            <td class="text-muted" style="font-size:0.85rem;">
+                                {% if payment.contract %}{{ payment.contract.job.title|truncatechars:30 }}{% else %}—{% endif %}
+                            </td>
+                            <td class="text-end fw-bold" style="font-size:0.9rem;">₹{{ payment.amount|floatformat:2 }}</td>
+                            <td class="text-end text-success" style="font-size:0.85rem;">
+                                {% if payment.fee > 0 %}₹{{ payment.fee|floatformat:2 }}{% else %}—{% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="6" class="text-center text-muted py-4">No transactions yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+{% endblock %}

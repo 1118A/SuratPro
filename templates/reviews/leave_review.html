@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Leave a Review — Share Your Experience{% endblock %}
+
+{% block content %}
+<div style="background:#f1f5f9;min-height:calc(100vh - 68px);padding:3rem 0;">
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <h2 class="fw-bold mb-4 text-center" style="color:#0f172a;">Rate Your Experience</h2>
+            
+            <div class="card border-0 shadow-sm" style="border-radius:12px;">
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4 pb-4 border-bottom">
+                        <img src="{{ reviewee.get_avatar_url }}" alt="{{ reviewee.username }}" width="80" height="80" style="border-radius:50%;object-fit:cover;border:3px solid #e2e8f0;margin-bottom:1rem;">
+                        <h5 class="fw-bold mb-1">{{ reviewee.get_full_name|default:reviewee.username }}</h5>
+                        <p class="text-muted mb-0">{{ contract.job.title }}</p>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'contracts:detail' contract.pk %}" class="btn btn-light" style="font-weight:600;padding:0.75rem 1.5rem;">Cancel</a>
+                            <button type="submit" class="btn btn-primary-main" style="font-weight:600;padding:0.75rem 1.5rem;">Submit Review</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

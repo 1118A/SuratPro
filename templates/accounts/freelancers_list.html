@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Browse Verified Freelancers in Surat{% endblock %}
+
+{% block content %}
+<div style="background:var(--gray-200);padding:3rem 0;">
+    <div class="container">
+        <div class="section-label">Talent Directory</div>
+        <h1 class="section-title">Find Expert Freelancers</h1>
+        <p class="text-muted mt-1" style="font-size:0.9rem;">{{ total_count }} freelancer{{ total_count|pluralize }} available</p>
+
+        <!-- Search / Filter Bar -->
+        <form method="get" class="mt-4">
+            <div class="d-flex gap-3 flex-wrap">
+                <input type="text" name="q" value="{{ query }}" class="form-control" style="max-width:320px;" placeholder="Search by name or skill...">
+                <input type="text" name="location" value="{{ location }}" class="form-control" style="max-width:220px;" placeholder="Location...">
+                <button type="submit" class="btn-primary-main">
+                    <i class="bi bi-search"></i> Search
+                </button>
+                {% if query or location %}
+                <a href="{% url 'accounts:freelancers_list' %}" class="btn-secondary-main">
+                    <i class="bi bi-x-circle"></i> Clear
+                </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row g-3">
+        {% for freelancer in page_obj %}
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'accounts:profile_username' freelancer.username %}" class="freelancer-card">
+                <div class="d-flex align-items-start gap-3">
+                    <img src="{{ freelancer.get_avatar_url }}"
+                         alt="{{ freelancer.username }}"
+                         class="freelancer-avatar-sm"
+                         onerror="this.src='{% static "img/default_avatar.png" %}'">
+                    <div class="flex-grow-1">
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <span class="freelancer-name">
+                                {{ freelancer.get_full_name|default:freelancer.username }}
+                            </span>
+                            {% if freelancer.is_verified %}
+                            <span class="badge-verified" title="Verified"><i class="bi bi-patch-check-fill"></i></span>
+                            {% endif %}
+                        </div>
+                        {% if freelancer.location %}
+                        <div class="text-muted" style="font-size:0.78rem;">
+                            <i class="bi bi-geo-alt me-1"></i>{{ freelancer.location }}
+                        </div>
+                        {% endif %}
+                        {% if freelancer.bio %}
+                        <div class="freelancer-bio-excerpt mt-1">{{ freelancer.bio }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="text-center py-5">
+                <div style="font-size:4rem;opacity:0.2;"><i class="bi bi-people"></i></div>
+                <h5 class="mt-3 text-muted">No freelancers found</h5>
+                {% if query or location %}
+                <p class="text-muted" style="font-size:0.875rem;">Try adjusting your search filters.</p>
+                <a href="{% url 'accounts:freelancers_list' %}" class="btn-secondary-main mt-2">Clear Filters</a>
+                {% else %}
+                <p class="text-muted" style="font-size:0.875rem;">Be the first to join!</p>
+                <a href="{% url 'accounts:register' %}?role=freelancer" class="btn-primary-main mt-2">Sign Up as Freelancer</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

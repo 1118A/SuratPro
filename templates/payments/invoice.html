@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Invoice #{{ contract.pk }} — SuratPro{% endblock %}
+
+{% block extra_css %}
+<style>
+  @media print {
+    .no-print { display: none !important; }
+    body { background: #fff !important; }
+    .invoice-paper { box-shadow: none !important; }
+  }
+  .invoice-paper {
+    max-width: 760px;
+    margin: 2rem auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+    padding: 3rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="background:#f1f5f9;min-height:calc(100vh - 68px);padding:2rem 0;">
+
+  <!-- Action bar -->
+  <div class="container no-print mb-3 d-flex gap-2">
+    <button onclick="window.print()" class="btn btn-primary" style="border-radius:10px;">
+      <i class="bi bi-printer me-1"></i> Print / Save PDF
+    </button>
+    <a href="{% url 'contracts:detail' contract.pk %}" class="btn btn-outline-secondary" style="border-radius:10px;">
+      <i class="bi bi-arrow-left me-1"></i> Back to Contract
+    </a>
+  </div>
+
+  <div class="invoice-paper">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-start mb-5">
+      <div>
+        <div style="font-size:1.8rem;font-weight:900;color:#2563eb;letter-spacing:-0.5px;">SuratPro</div>
+        <div style="color:#64748b;font-size:0.85rem;">Surat's Freelance Marketplace</div>
+        <div style="color:#64748b;font-size:0.8rem;">Surat, Gujarat, India — 395001</div>
+      </div>
+      <div class="text-end">
+        <div style="font-size:1.2rem;font-weight:800;color:#0f172a;">INVOICE</div>
+        <div style="color:#64748b;font-size:0.85rem;">#INV-{{ contract.pk|stringformat:"05d" }}</div>
+        <div style="color:#64748b;font-size:0.8rem;">
+          Date: {% if payment %}{{ payment.created_at|date:"d M Y" }}{% else %}{{ contract.created_at|date:"d M Y" }}{% endif %}
+        </div>
+        <span style="background:#d1fae5;color:#065f46;border-radius:20px;padding:3px 12px;font-size:0.78rem;font-weight:600;">
+          {{ contract.get_status_display|upper }}
+        </span>
+      </div>
+    </div>
+
+    <hr style="border-color:#e2e8f0;margin-bottom:2rem;">
+
+    <!-- Bill from / to -->
+    <div class="row mb-4">
+      <div class="col-6">
+        <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;color:#94a3b8;letter-spacing:0.05em;margin-bottom:6px;">Billed From</div>
+        <div class="fw-bold" style="color:#0f172a;">{{ contract.freelancer.get_full_name|default:contract.freelancer.username }}</div>
+        <div style="color:#64748b;font-size:0.85rem;">{{ contract.freelancer.email }}</div>
+        {% if contract.freelancer.location %}
+        <div style="color:#64748b;font-size:0.85rem;">{{ contract.freelancer.location }}</div>
+        {% endif %}
+      </div>
+      <div class="col-6 text-end">
+        <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;color:#94a3b8;letter-spacing:0.05em;margin-bottom:6px;">Billed To</div>
+        <div class="fw-bold" style="color:#0f172a;">{{ contract.client.get_full_name|default:contract.client.username }}</div>
+        <div style="color:#64748b;font-size:0.85rem;">{{ contract.client.email }}</div>
+        {% if contract.client.location %}
+        <div style="color:#64748b;font-size:0.85rem;">{{ contract.client.location }}</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Job info -->
+    <div style="background:#f8fafc;border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:2rem;">
+      <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;color:#94a3b8;letter-spacing:0.05em;margin-bottom:8px;">Project</div>
+      <div class="fw-bold" style="color:#0f172a;font-size:1rem;">{{ contract.job.title }}</div>
+      <div style="color:#64748b;font-size:0.85rem;margin-top:4px;">Contract started: {{ contract.created_at|date:"d M Y" }}</div>
+    </div>
+
+    <!-- Line items -->
+    <table class="table" style="font-size:0.9rem;">
+      <thead>
+        <tr style="border-bottom:2px solid #e2e8f0;color:#64748b;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.04em;">
+          <th class="fw-semibold ps-0">Description</th>
+          <th class="fw-semibold text-end pe-0">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-color:#f1f5f9;">
+          <td class="ps-0 py-3">
+            <div class="fw-semibold" style="color:#0f172a;">Freelance Services</div>
+            <div style="color:#64748b;font-size:0.82rem;">{{ contract.job.title }}</div>
+          </td>
+          <td class="text-end pe-0 py-3 fw-semibold">₹{{ contract.agreed_amount }}</td>
+        </tr>
+        {% if payment %}
+        <tr style="border-color:#f1f5f9;">
+          <td class="ps-0 py-2">
+            <div style="color:#64748b;font-size:0.85rem;">Platform Fee (20%)</div>
+          </td>
+          <td class="text-end pe-0 py-2" style="color:#dc2626;">- ₹{{ payment.fee|floatformat:2 }}</td>
+        </tr>
+        {% endif %}
+      </tbody>
+      <tfoot>
+        <tr style="border-top:2px solid #e2e8f0;">
+          <td class="ps-0 py-3 fw-bold" style="font-size:1rem;">Net Payable</td>
+          <td class="text-end pe-0 py-3 fw-bold" style="font-size:1.1rem;color:#059669;">
+            {% if payment %}₹{{ payment.amount|floatformat:2 }}{% else %}₹{{ contract.agreed_amount }}{% endif %}
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <hr style="border-color:#e2e8f0;margin:1.5rem 0;">
+
+    <!-- Footer -->
+    <div class="d-flex justify-content-between align-items-center">
+      <div style="color:#94a3b8;font-size:0.78rem;">
+        Thank you for working with SuratPro.<br>
+        Questions? Contact <a href="mailto:support@suratpro.in" style="color:#2563eb;">support@suratpro.in</a>
+      </div>
+      <div style="color:#94a3b8;font-size:0.75rem;text-align:right;">
+        This is a computer-generated invoice.<br>
+        Powered by SuratPro
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

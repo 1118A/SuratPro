@@ -1,0 +1,650 @@
+/*
+ * SuratPro — Custom Admin Panel CSS (Light & Modern)
+ * Overrides Jazzmin default theme to match the website palette.
+ */
+
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-light: #dbeafe;
+    --secondary: #7c3aed;
+    --secondary-light: #ede9fe;
+    --success: #059669;
+    --success-light: #d1fae5;
+    --warning: #d97706;
+    --danger: #dc2626;
+    --dark: #0f172a;
+    --gray-100: #f8fafc;
+    --gray-200: #f1f5f9;
+    --gray-300: #e2e8f0;
+    --gray-400: #cbd5e1;
+    --gray-500: #94a3b8;
+    --gray-600: #64748b;
+    --gray-700: #475569;
+    --gray-800: #334155;
+    --gray-900: #1e293b;
+    --white: #ffffff;
+    --border-radius: 12px;
+    --border-radius-sm: 8px;
+    --transition: all 0.2s ease;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+/* =====================================================
+   FONT EVERYWHERE
+   ===================================================== */
+*,
+body,
+.content-wrapper,
+.main-header,
+.main-sidebar,
+.nav-sidebar .nav-link,
+.card,
+.table,
+input,
+select,
+textarea,
+button {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+    letter-spacing: -0.01em;
+}
+
+/* =====================================================
+   FONT AWESOME ICON RESTORE
+   ===================================================== */
+.fa,
+.fas,
+.far,
+.fal,
+.fad,
+.fab,
+.nav-icon,
+[class^="fa-"],
+[class*=" fa-"],
+.fa-solid,
+.fa-regular,
+.fa-brands,
+.fa-light {
+    font-family: "Font Awesome 6 Free" !important;
+    font-style: normal !important;
+    font-variant: normal !important;
+    text-rendering: auto !important;
+    -webkit-font-smoothing: antialiased !important;
+    letter-spacing: normal !important;
+}
+
+.fab,
+.fa-brands {
+    font-family: "Font Awesome 6 Brands" !important;
+}
+
+/* =====================================================
+   GLOBAL LAYOUT & BACKGROUNDS
+   ===================================================== */
+body,
+.content-wrapper {
+    background-color: var(--gray-100) !important;
+    color: var(--gray-900) !important;
+}
+
+/* =====================================================
+   TOP NAVBAR
+   ===================================================== */
+.main-header.navbar {
+    background-color: var(--white) !important;
+    border-bottom: 1px solid var(--gray-300) !important;
+    min-height: 60px;
+    box-shadow: none !important;
+}
+
+.main-header .navbar-brand,
+.main-header .brand-text,
+.main-header .nav-link {
+    color: var(--gray-700) !important;
+    font-weight: 600 !important;
+}
+
+.main-header .nav-link:hover {
+    color: var(--primary) !important;
+    background-color: var(--primary-light) !important;
+    border-radius: var(--border-radius-sm);
+}
+
+.main-header .navbar-search-block .form-control,
+.main-header form[role="search"] .form-control {
+    background-color: var(--gray-100) !important;
+    border: 1px solid var(--gray-300) !important;
+    border-radius: var(--border-radius-sm) !important;
+    color: var(--gray-900) !important;
+}
+
+/* =====================================================
+   LEFT SIDEBAR
+   ===================================================== */
+.main-sidebar {
+    background-color: var(--white) !important;
+    border-right: 1px solid var(--gray-300) !important;
+    box-shadow: none !important;
+}
+
+.brand-link {
+    background-color: var(--white) !important;
+    border-bottom: 1px solid var(--gray-300) !important;
+    color: var(--primary) !important;
+}
+
+.brand-link .brand-text {
+    font-weight: 800 !important;
+    font-size: 1.2rem !important;
+    color: var(--primary) !important;
+}
+
+/* Sidebar user panel */
+.sidebar .user-panel {
+    border-bottom: 1px solid var(--gray-300) !important;
+}
+
+.sidebar .user-panel .info a {
+    color: var(--gray-900) !important;
+    font-weight: 600 !important;
+}
+
+/* Nav Headers */
+.nav-sidebar .nav-header {
+    color: var(--gray-500) !important;
+    font-weight: 700 !important;
+    font-size: 0.75rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+}
+
+/* Nav Links */
+.nav-sidebar .nav-item .nav-link {
+    color: var(--gray-700) !important;
+    font-weight: 500 !important;
+    border-radius: var(--border-radius-sm) !important;
+    margin: 2px 0.5rem !important;
+    transition: var(--transition) !important;
+}
+
+.nav-sidebar .nav-item .nav-link:hover {
+    background-color: var(--gray-100) !important;
+    color: var(--primary) !important;
+}
+
+.nav-sidebar .nav-item .nav-link.active {
+    background-color: var(--primary-light) !important;
+    color: var(--primary) !important;
+    font-weight: 600 !important;
+    box-shadow: none !important;
+}
+
+/* =====================================================
+   BUTTONS
+   ===================================================== */
+.btn,
+.btn-primary,
+.btn-success,
+.btn-info,
+.btn-warning,
+.btn-danger,
+input[type="submit"] {
+    border-radius: var(--border-radius-sm) !important;
+    font-weight: 600 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    transition: var(--transition) !important;
+}
+
+.btn-primary,
+input[name="_save"],
+.submit-row input[type="submit"].default {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: var(--white) !important;
+}
+
+.btn-primary:hover,
+input[name="_save"]:hover,
+.submit-row input[type="submit"].default:hover {
+    background-color: var(--primary-dark) !important;
+    border-color: var(--primary-dark) !important;
+}
+
+.btn-success {
+    background-color: var(--success) !important;
+    border-color: var(--success) !important;
+}
+
+.btn-danger,
+.deletelink {
+    background-color: var(--danger) !important;
+    border-color: var(--danger) !important;
+    color: var(--white) !important;
+}
+
+/* Add links (object tools) */
+.object-tools a.addlink {
+    background-color: var(--primary) !important;
+    color: var(--white) !important;
+    border-radius: var(--border-radius-sm) !important;
+    font-weight: 600 !important;
+    padding: 0.5rem 1rem !important;
+}
+
+.object-tools a.addlink:hover {
+    background-color: var(--primary-dark) !important;
+}
+
+/* =====================================================
+   BUTTON GROUPS & DATE HIERARCHY
+   ===================================================== */
+.date-hierarchy.btn-group {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+}
+
+.date-hierarchy.btn-group .btn {
+    border-radius: var(--border-radius-sm) !important;
+    margin: 0 !important;
+    padding: 0.4rem 0.6rem !important;
+    /* Taller, less wide */
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+    box-shadow: none !important;
+    line-height: 1.2 !important;
+}
+
+/* Make the secondary button look like a subtle filter chip */
+.date-hierarchy.btn-group .btn-secondary {
+    background-color: var(--white) !important;
+    color: var(--gray-600) !important;
+    border: 1px solid var(--gray-300) !important;
+}
+
+.date-hierarchy.btn-group .btn-secondary:hover {
+    background-color: var(--gray-50) !important;
+    color: var(--dark) !important;
+    border-color: var(--gray-400) !important;
+}
+
+/* =====================================================
+   CARDS & MODULES
+   ===================================================== */
+.card,
+.module,
+fieldset.module,
+#recent-actions-module,
+#changelist-filter {
+    background-color: var(--white) !important;
+    border: 1px solid var(--gray-300) !important;
+    border-radius: var(--border-radius) !important;
+    box-shadow: none !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.card-header,
+fieldset.module h2,
+.module>h2,
+#changelist-filter h2,
+#recent-actions-module h2 {
+    background-color: var(--white) !important;
+    border-bottom: 1px solid var(--gray-300) !important;
+    color: var(--dark) !important;
+    font-weight: 700 !important;
+    text-transform: none !important;
+    padding: 1rem 1.25rem !important;
+}
+
+/* =====================================================
+   TABLES
+   ===================================================== */
+#result_list,
+.results .table {
+    border: none !important;
+    background-color: var(--white) !important;
+}
+
+#result_list thead th,
+.table thead th {
+    background-color: var(--gray-100) !important;
+    color: var(--gray-700) !important;
+    font-weight: 700 !important;
+    border-bottom: 2px solid var(--gray-300) !important;
+    border-top: none !important;
+    text-transform: uppercase !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.5px !important;
+    padding: 1rem !important;
+}
+
+#result_list tbody tr {
+    background-color: var(--white) !important;
+    border-bottom: 1px solid var(--gray-200) !important;
+}
+
+#result_list tbody tr:hover {
+    background-color: var(--gray-100) !important;
+}
+
+#result_list td,
+.table td {
+    padding: 1rem !important;
+    color: var(--gray-800) !important;
+    vertical-align: middle !important;
+}
+
+#result_list td a,
+.changelink {
+    color: var(--primary) !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+}
+
+#result_list td a:hover {
+    text-decoration: underline !important;
+}
+
+/* Dashboard summary tables */
+.card .table {
+    margin-bottom: 0 !important;
+}
+
+.card .table tbody tr {
+    background-color: var(--white) !important;
+    border-bottom: 1px solid var(--gray-200) !important;
+}
+
+.card .table tbody tr:last-child {
+    border-bottom: none !important;
+}
+
+.card .table tbody tr:hover {
+    background-color: var(--gray-100) !important;
+}
+
+.card .table td,
+.card .table th {
+    color: var(--gray-800) !important;
+    padding: 1rem 1.25rem !important;
+    vertical-align: middle !important;
+}
+
+/* Dashboard Add / Change buttons */
+.card .table td a.addlink,
+.card .table td a.changelink,
+.btn-xs {
+    display: inline-block !important;
+    padding: 0.35rem 0.85rem !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    border-radius: 50px !important;
+    text-align: center !important;
+    margin-left: 0.25rem !important;
+    text-decoration: none !important;
+}
+
+/* Primary Button (Add) */
+.card .table td a.addlink {
+    background-color: var(--primary) !important;
+    color: var(--white) !important;
+    border: 1px solid var(--primary) !important;
+}
+
+.card .table td a.addlink:hover {
+    background-color: var(--primary-dark) !important;
+    border-color: var(--primary-dark) !important;
+    color: var(--white) !important;
+}
+
+/* Secondary Button (Change) */
+.card .table td a.changelink {
+    background-color: var(--gray-100) !important;
+    color: var(--gray-800) !important;
+    border: 1px solid var(--gray-300) !important;
+}
+
+.card .table td a.changelink:hover {
+    background-color: var(--gray-200) !important;
+    color: var(--dark) !important;
+}
+
+/* =====================================================
+   RECENT ACTIONS - SIMPLE STANDARD LAYOUT
+   ===================================================== */
+/* Make the right column a standard card */
+#content-related {
+    background-color: var(--white) !important;
+    border: 1px solid var(--gray-300) !important;
+    border-radius: var(--border-radius) !important;
+    box-shadow: none !important;
+    margin-bottom: 1.5rem !important;
+    overflow: hidden !important;
+}
+
+#content-related .card {
+    border: none !important;
+    margin-bottom: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* Standard Card Header */
+#content-related h3.card-title,
+#content-related h4,
+#recent-actions-module h3.card-title,
+#recent-actions-module h2,
+#recent-actions-module h3,
+#recent-actions-module h4 {
+    margin: 0 !important;
+    padding: 1rem 1.25rem !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    color: var(--dark) !important;
+    background-color: var(--white) !important;
+    border-bottom: 1px solid var(--gray-300) !important;
+    text-transform: none !important;
+}
+
+/* Timeline Container */
+.timeline {
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative !important;
+    background-color: transparent !important;
+}
+
+/* Hide Vertical line */
+.timeline::before {
+    display: none !important;
+}
+
+/* Individual Rows (Matches table rows) */
+.timeline>div {
+    position: relative !important;
+    margin-bottom: 0 !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    padding: 1rem 1.25rem !important;
+    border-bottom: 1px solid var(--gray-200) !important;
+    transition: background-color 0.2s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.timeline>div:last-child {
+    border-bottom: none !important;
+}
+
+.timeline>div:hover {
+    background-color: var(--gray-50) !important;
+    transform: none !important;
+    box-shadow: none !important;
+    border-color: var(--gray-200) !important;
+}
+
+/* Action Icon Styling */
+.timeline>div>i {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 11px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: static !important;
+    color: var(--white) !important;
+    border-radius: 50% !important;
+    margin-right: 1rem !important;
+    flex-shrink: 0 !important;
+    box-shadow: none !important;
+    left: auto !important;
+    top: auto !important;
+}
+
+/* Timeline Content Area */
+.timeline>div>.timeline-item {
+    box-shadow: none !important;
+    border: none !important;
+    background-color: transparent !important;
+    margin-left: 0 !important;
+    padding: 0 !important;
+    position: relative !important;
+    flex-grow: 1 !important;
+}
+
+/* Timestamp Styling */
+.timeline-item>.time {
+    color: var(--gray-500) !important;
+    position: static !important;
+    float: right !important;
+    padding: 0 !important;
+    font-size: 0.75rem !important;
+    font-weight: 400 !important;
+    background: transparent !important;
+}
+
+/* Action Title */
+.timeline-item>.timeline-header {
+    margin: 0 0 0.15rem 0 !important;
+    border-bottom: none !important;
+    padding: 0 !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    color: var(--dark) !important;
+}
+
+/* Action Details */
+.timeline-item>.timeline-body {
+    padding: 0 !important;
+    font-size: 0.85rem !important;
+    color: var(--gray-600) !important;
+    line-height: 1.4 !important;
+}
+
+/* =====================================================
+   FORMS & INPUTS
+   ===================================================== */
+.form-control,
+.form-select,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select,
+textarea {
+    background-color: var(--white) !important;
+    border: 1px solid var(--gray-300) !important;
+    border-radius: var(--border-radius-sm) !important;
+    color: var(--gray-900) !important;
+    padding: 0.5rem 0.75rem !important;
+    transition: var(--transition) !important;
+}
+
+.form-control:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px var(--primary-light) !important;
+    outline: none !important;
+}
+
+label {
+    color: var(--gray-800) !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+}
+
+.submit-row {
+    background-color: var(--gray-100) !important;
+    border-top: 1px solid var(--gray-300) !important;
+    border-radius: 0 0 var(--border-radius) var(--border-radius) !important;
+    padding: 1rem 1.25rem !important;
+}
+
+/* =====================================================
+   MESSAGES
+   ===================================================== */
+.messagelist li,
+.alert {
+    border-radius: var(--border-radius-sm) !important;
+    border: none !important;
+    font-weight: 500 !important;
+}
+
+.messagelist li.success,
+.alert-success {
+    background-color: var(--success-light) !important;
+    color: var(--success) !important;
+}
+
+.messagelist li.error,
+.alert-danger {
+    background-color: var(--danger-light) !important;
+    color: var(--danger) !important;
+}
+
+/* =====================================================
+   LOGIN PAGE
+   ===================================================== */
+body.login {
+    background-color: var(--gray-100) !important;
+}
+
+.login-card-body {
+    background-color: var(--white) !important;
+    border-radius: var(--border-radius) !important;
+    border: 1px solid var(--gray-300) !important;
+    box-shadow: none !important;
+    padding: 2rem !important;
+}
+
+.login-logo a {
+    color: var(--primary) !important;
+    font-weight: 800 !important;
+}
+
+/* =====================================================
+   RESPONSIVE / SCROLLBAR
+   ===================================================== */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gray-400);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--gray-600);
+}

@@ -1,0 +1,574 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ profile_user.get_full_name|default:profile_user.username }} — {{ profile_user.get_role_display }} on SuratPro{% endblock %}
+
+{% block content %}
+
+<!-- Profile Header -->
+<div class="profile-header">
+    <div class="container">
+        <div class="d-flex flex-column flex-md-row align-items-start align-items-md-end gap-4">
+            <img src="{{ profile_user.get_avatar_url }}"
+                 alt="{{ profile_user.username }}"
+                 class="profile-avatar"
+                 onerror="this.src='{% static "img/default_avatar.png" %}'">
+
+
+            <div class="flex-grow-1">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <h1 class="profile-name mb-0">
+                        {{ profile_user.get_full_name|default:profile_user.username }}
+                    </h1>
+                    {% if profile_user.is_verified %}
+                    <span class="badge-verified"><i class="bi bi-patch-check-fill me-1"></i>Verified</span>
+                    {% endif %}
+                    {% if profile_user.is_freelancer %}
+                    <span class="badge-role-freelancer">Freelancer</span>
+                    {% else %}
+                    <span class="badge-role-client">Client</span>
+                    {% endif %}
+                </div>
+
+                <!-- Star Rating Display -->
+                {% if avg_rating %}
+                <div class="d-flex align-items-center gap-2 mt-2">
+                    <div style="color:#f59e0b;font-size:1.1rem;">
+                        {% with avg_rating|floatformat:0 as stars %}
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= stars|add:"0" %}★{% else %}☆{% endif %}
+                            {% endfor %}
+                        {% endwith %}
+                    </div>
+                    <span style="color:#cbd5e1;font-size:0.9rem;">{{ avg_rating|floatformat:1 }} / 5 ({{ review_count }} review{{ review_count|pluralize }})</span>
+                </div>
+                {% endif %}
+
+                <div class="d-flex flex-wrap gap-3 mt-2 profile-meta">
+                    {% if profile_user.location %}
+                    <span><i class="bi bi-geo-alt me-1"></i>{{ profile_user.location }}</span>
+                    {% endif %}
+                    {% if profile_user.website %}
+                    <a href="{{ profile_user.website }}" target="_blank" class="text-decoration-none" style="color:#60a5fa;">
+                        <i class="bi bi-globe me-1"></i>Website
+                    </a>
+                    {% endif %}
+                    <span><i class="bi bi-calendar3 me-1"></i>Joined {{ profile_user.created_at|date:"M Y" }}</span>
+                </div>
+            </div>
+
+            {% if is_own_profile %}
+            <div>
+                <a href="{% url 'accounts:edit_profile' %}" class="btn-primary-main">
+                    <i class="bi bi-pencil-square"></i> Edit Profile
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Profile Body -->
+<div class="container py-5">
+    <div class="row g-4">
+
+        <!-- Left Sidebar -->
+        <div class="col-lg-4">
+            <!-- About Card -->
+            {% if profile_user.bio %}
+            <div class="card-main p-4 mb-4">
+                <h5 class="fw-bold mb-3"><i class="bi bi-person-lines-fill text-primary me-2"></i>About</h5>
+                <p class="text-muted mb-0" style="font-size:0.9rem;line-height:1.7;">{{ profile_user.bio }}</p>
+            </div>
+            {% endif %}
+
+            <!-- Contact / Wallet Card -->
+            <div class="card-main p-4 mb-4">
+                <h5 class="fw-bold mb-3"><i class="bi bi-info-circle text-primary me-2"></i>Details</h5>
+                <ul class="list-unstyled mb-0 d-flex flex-column gap-2" style="font-size:0.875rem;">
+                    <li class="d-flex align-items-center gap-2 text-muted">
+                        <i class="bi bi-envelope" style="width:16px;"></i>
+                        <span>{{ profile_user.email }}</span>
+                    </li>
+                    {% if profile_user.phone %}
+                    <li class="d-flex align-items-center gap-2 text-muted">
+                        <i class="bi bi-telephone" style="width:16px;"></i>
+                        <span>{{ profile_user.phone }}</span>
+                    </li>
+                    {% endif %}
+                    {% if profile_user.location %}
+                    <li class="d-flex align-items-center gap-2 text-muted">
+                        <i class="bi bi-geo-alt" style="width:16px;"></i>
+                        <span>{{ profile_user.location }}</span>
+                    </li>
+                    {% endif %}
+                    {% if profile_user.website %}
+                    <li class="d-flex align-items-center gap-2">
+                        <i class="bi bi-globe text-muted" style="width:16px;"></i>
+                        <a href="{{ profile_user.website }}" target="_blank" class="text-primary text-decoration-none">
+                            {{ profile_user.website|truncatechars:30 }}
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if is_own_profile %}
+                    <li class="d-flex align-items-center justify-content-between mt-2 pt-2 border-top">
+                        <span class="text-muted d-flex align-items-center gap-2"><i class="bi bi-wallet2" style="width:16px;"></i> Wallet</span>
+                        <span class="fw-bold text-success">₹{{ profile_user.wallet_balance|floatformat:2 }}</span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <!-- Resume Card -->
+            {% if profile_user.is_freelancer %}
+            <div class="card-main p-4 mb-4">
+                <h5 class="fw-bold mb-3"><i class="bi bi-file-earmark-person text-primary me-2"></i>Resume / CV</h5>
+                {% if profile_user.resume %}
+                    <a href="{{ profile_user.resume.url }}" target="_blank" class="btn btn-outline-primary w-100" style="font-weight:600;">
+                        <i class="bi bi-download me-2"></i>Download Resume
+                    </a>
+                    {% if is_own_profile %}
+                    <small class="text-muted d-block text-center mt-2">Upload a new one from <a href="{% url 'accounts:edit_profile' %}">Edit Profile</a></small>
+                    {% endif %}
+                {% else %}
+                    {% if is_own_profile %}
+                    <div class="text-center text-muted py-2" style="font-size:0.9rem;">
+                        <i class="bi bi-cloud-upload fs-3 d-block mb-2"></i>
+                        No resume uploaded yet.
+                        <a href="{% url 'accounts:edit_profile' %}" class="d-block mt-2 fw-bold text-primary">Upload Resume →</a>
+                    </div>
+                    {% else %}
+                    <p class="text-muted mb-0" style="font-size:0.9rem;">No resume available.</p>
+                    {% endif %}
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Right Content -->
+        <div class="col-lg-8">
+
+            <!-- Stats Row -->
+            <div class="row g-3 mb-4">
+                <div class="col-4">
+                    <div class="card-main p-3 text-center">
+                        <div style="font-size:1.5rem;font-weight:800;color:var(--primary);">{{ jobs_stat }}</div>
+                        <div style="font-size:0.78rem;color:var(--gray-600);font-weight:500;">
+                            {% if profile_user.is_freelancer %}Jobs Completed{% else %}Jobs Completed{% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card-main p-3 text-center">
+                        <div style="font-size:1.5rem;font-weight:800;color:var(--primary);">{{ review_count }}</div>
+                        <div style="font-size:0.78rem;color:var(--gray-600);font-weight:500;">Reviews</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card-main p-3 text-center">
+                        {% if avg_rating %}
+                        <div style="font-size:1.5rem;font-weight:800;color:#f59e0b;">{{ avg_rating|floatformat:1 }}★</div>
+                        {% else %}
+                        <div style="font-size:1.5rem;font-weight:800;color:#94a3b8;">N/A</div>
+                        {% endif %}
+                        <div style="font-size:0.78rem;color:var(--gray-600);font-weight:500;">Avg Rating</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skills Section (Freelancer) -->
+            {% if profile_user.is_freelancer %}
+            <div class="card-main p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-code-slash text-primary me-2"></i>Skills</h5>
+                </div>
+
+                {% if skills %}
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    {% for fs in skills %}
+                    <div class="d-flex align-items-center gap-1" style="background:#f1f5f9;border-radius:50px;padding:0.35rem 0.75rem;">
+                        <span style="font-size:0.85rem;font-weight:600;color:#334155;">{{ fs.skill.name }}</span>
+                        <span style="font-size:0.7rem;padding:2px 7px;border-radius:20px;margin-left:4px;font-weight:700;"
+                              class="skill-level-badge skill-level-{{ fs.level }}">
+                            {{ fs.get_level_display }}
+                        </span>
+                        {% if is_own_profile %}
+                        <a href="{% url 'accounts:remove_skill' fs.pk %}" class="text-danger ms-1" style="font-size:0.75rem;text-decoration:none;" title="Remove skill" onclick="return confirm('Remove {{ fs.skill.name }}?')">✕</a>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted mb-3" style="font-size:0.9rem;">No skills added yet.</p>
+                {% endif %}
+
+                {% if is_own_profile %}
+                <div class="mt-3 pt-3 border-top">
+                    <label class="form-label fw-bold mb-1" style="font-size:0.85rem;color:#334155;">
+                        <i class="bi bi-plus-circle me-1 text-primary"></i>Add Skills
+                    </label>
+                    <p style="font-size:0.78rem;color:#94a3b8;margin-bottom:8px;">
+                        Type a skill and press <kbd>Enter</kbd> or <kbd>,</kbd> to add it as a tag. Add as many as you like, then click Save.
+                    </p>
+
+                    <form method="post" action="{% url 'accounts:add_skill' %}" id="skill-tag-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="level" id="tag-level-hidden" value="intermediate">
+                        <div id="tag-skill-inputs"></div><!-- hidden inputs injected here -->
+
+                        <!-- Tag input box -->
+                        <div id="tag-input-box"
+                             style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;
+                                    min-height:46px;padding:6px 10px;
+                                    border:1.5px solid #e2e8f0;border-radius:10px;background:#fff;
+                                    cursor:text;transition:border-color 0.2s;"
+                             onclick="document.getElementById('tag-text-input').focus()">
+                            <!-- chips rendered here by JS -->
+                            <input id="tag-text-input" type="text" autocomplete="off"
+                                   placeholder="e.g. Python, Figma, GST Filing…"
+                                   style="border:none;outline:none;flex:1;min-width:150px;
+                                          font-size:0.875rem;background:transparent;padding:2px 4px;">
+                        </div>
+
+                        <!-- Autocomplete dropdown -->
+                        <ul id="tag-autocomplete"
+                            style="display:none;position:absolute;z-index:999;background:#fff;
+                                   border:1.5px solid #e2e8f0;border-radius:8px;margin-top:2px;
+                                   padding:4px 0;list-style:none;min-width:220px;
+                                   box-shadow:0 4px 16px rgba(0,0,0,0.1);max-height:200px;overflow-y:auto;">
+                        </ul>
+
+                        <div class="d-flex align-items-center gap-2 mt-2">
+                            <select id="tag-level-select" class="form-select form-select-sm" style="max-width:160px;">
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate" selected>Intermediate</option>
+                                <option value="expert">Expert</option>
+                            </select>
+                            <button type="submit" id="tag-submit-btn" class="btn btn-primary-main btn-sm"
+                                    style="height:36px;padding:0 1.25rem;" disabled>
+                                <i class="bi bi-check2-all me-1"></i>
+                                Save <span id="tag-count-badge"
+                                          style="background:rgba(255,255,255,0.3);border-radius:20px;padding:1px 7px;margin-left:2px;font-size:0.8rem;">
+                                    0
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- All skill names for autocomplete (JSON) -->
+                <script>
+                var SKILL_SUGGESTIONS = [
+                    {% for skill in all_skills %}"{{ skill.name }}"{% if not forloop.last %},{% endif %}{% endfor %}
+                ];
+                var USER_SKILLS = [
+                    {% for fs in skills %}"{{ fs.skill.name|lower }}"{% if not forloop.last %},{% endif %}{% endfor %}
+                ];
+                </script>
+                <script>
+                (function () {
+                    var box        = document.getElementById('tag-input-box');
+                    var input      = document.getElementById('tag-text-input');
+                    var acList     = document.getElementById('tag-autocomplete');
+                    var hiddenWrap = document.getElementById('tag-skill-inputs');
+                    var submitBtn  = document.getElementById('tag-submit-btn');
+                    var countBadge = document.getElementById('tag-count-badge');
+                    var levelSel   = document.getElementById('tag-level-select');
+                    var levelHid   = document.getElementById('tag-level-hidden');
+                    var tags       = [];  // array of {name}
+
+                    // ---- Sync level ----
+                    levelSel.addEventListener('change', function() { levelHid.value = this.value; });
+
+                    // ---- Add a tag ----
+                    function addTag(name) {
+                        name = name.trim();
+                        if (!name) return;
+                        // Deduplicate (case-insensitive, also skip already-owned skills)
+                        var lower = name.toLowerCase();
+                        if (tags.some(function(t){ return t.toLowerCase() === lower; })) return;
+                        if (USER_SKILLS.indexOf(lower) !== -1) return; // already have it
+                        tags.push(name);
+                        renderTags();
+                        input.value = '';
+                        hideAC();
+                        updateSubmit();
+                    }
+
+                    // ---- Remove a tag ----
+                    function removeTag(name) {
+                        tags = tags.filter(function(t){ return t !== name; });
+                        renderTags();
+                        updateSubmit();
+                    }
+
+                    // ---- Render chips ----
+                    function renderTags() {
+                        // Remove existing chips (all elements before the input)
+                        Array.from(box.querySelectorAll('.skill-chip')).forEach(function(el){ el.remove(); });
+                        tags.forEach(function(name) {
+                            var chip = document.createElement('span');
+                            chip.className = 'skill-chip';
+                            chip.style.cssText = 'display:inline-flex;align-items:center;gap:5px;background:#e0e7ff;color:#3730a3;border-radius:20px;padding:3px 10px;font-size:0.8rem;font-weight:600;';
+                            chip.innerHTML = name + ' <span style="cursor:pointer;font-size:0.9rem;opacity:0.7;" data-name="' + name + '">✕</span>';
+                            chip.querySelector('span').addEventListener('click', function(){ removeTag(name); });
+                            box.insertBefore(chip, input);
+                        });
+                    }
+
+                    // ---- Update hidden inputs + button state ----
+                    function updateSubmit() {
+                        hiddenWrap.innerHTML = '';
+                        tags.forEach(function(name) {
+                            var inp = document.createElement('input');
+                            inp.type = 'hidden'; inp.name = 'skill_names'; inp.value = name;
+                            hiddenWrap.appendChild(inp);
+                        });
+                        submitBtn.disabled = tags.length === 0;
+                        countBadge.textContent = tags.length;
+                    }
+
+                    // ---- Autocomplete ----
+                    var acMatches = [];  // current suggestion list
+                    var acIndex   = -1; // highlighted index (-1 = none)
+
+                    function showAC(query) {
+                        acMatches = SKILL_SUGGESTIONS.filter(function(s){
+                            return s.toLowerCase().indexOf(query.toLowerCase()) !== -1
+                                && USER_SKILLS.indexOf(s.toLowerCase()) === -1
+                                && !tags.some(function(t){ return t.toLowerCase() === s.toLowerCase(); });
+                        }).slice(0, 8);
+                        acIndex = -1;
+                        if (!acMatches.length || !query) { hideAC(); return; }
+                        renderAC();
+                    }
+
+                    function renderAC() {
+                        acList.innerHTML = '';
+                        acMatches.forEach(function(s, i) {
+                            var li = document.createElement('li');
+                            li.textContent = s;
+                            li.dataset.idx = i;
+                            li.style.cssText = 'padding:7px 14px;cursor:pointer;font-size:0.875rem;transition:background 0.1s;';
+                            if (i === acIndex) li.style.background = '#e0e7ff';
+                            li.addEventListener('mouseenter', function(){ highlightAC(i); });
+                            li.addEventListener('mousedown', function(e){ e.preventDefault(); addTag(s); });
+                            acList.appendChild(li);
+                        });
+                        acList.style.display = 'block';
+                    }
+
+                    function highlightAC(i) {
+                        acIndex = i;
+                        renderAC();
+                        // Show ghost hint in input
+                        if (acIndex >= 0 && acMatches[acIndex]) {
+                            input.setAttribute('placeholder', acMatches[acIndex]);
+                        }
+                    }
+
+                    function hideAC() {
+                        acList.style.display = 'none';
+                        acMatches = []; acIndex = -1;
+                        input.setAttribute('placeholder', 'e.g. Python, Figma, GST Filing…');
+                    }
+
+                    // ---- Key handling ----
+                    input.addEventListener('keydown', function(e) {
+                        if (e.key === 'Tab') {
+                            // Accept the highlighted suggestion, or the first one if none highlighted
+                            if (acMatches.length) {
+                                e.preventDefault();
+                                var pick = acIndex >= 0 ? acMatches[acIndex] : acMatches[0];
+                                addTag(pick);
+                            }
+                        } else if (e.key === 'ArrowDown') {
+                            e.preventDefault();
+                            if (acMatches.length) highlightAC(Math.min(acIndex + 1, acMatches.length - 1));
+                        } else if (e.key === 'ArrowUp') {
+                            e.preventDefault();
+                            if (acMatches.length) highlightAC(Math.max(acIndex - 1, 0));
+                        } else if (e.key === 'Enter' || e.key === ',') {
+                            e.preventDefault();
+                            if (acIndex >= 0 && acMatches[acIndex]) {
+                                // Enter on a highlighted suggestion → accept it
+                                addTag(acMatches[acIndex]);
+                            } else {
+                                addTag(input.value.replace(',','').trim());
+                            }
+                        } else if (e.key === 'Escape') {
+                            hideAC();
+                        } else if (e.key === 'Backspace' && input.value === '' && tags.length) {
+                            removeTag(tags[tags.length - 1]);
+                        }
+                    });
+                    input.addEventListener('input', function() { showAC(this.value); });
+                    input.addEventListener('blur', function() { setTimeout(hideAC, 150); });
+                    input.addEventListener('focus', function() { box.style.borderColor = '#2563eb'; });
+                    input.addEventListener('blur', function() { box.style.borderColor = '#e2e8f0'; });
+
+                    // Position autocomplete under the box
+                    box.style.position = 'relative';
+                    box.appendChild(acList);
+                })();
+                </script>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Phase 10: Portfolio Showcase -->
+            {% if profile_user.is_freelancer %}
+            <div class="card-main p-4 mb-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="fw-bold mb-0">
+                        <i class="bi bi-images text-primary me-2"></i>Portfolio
+                    </h5>
+                    {% if is_own_profile %}
+                    <button class="btn btn-sm btn-outline-primary" style="border-radius:8px;"
+                            data-bs-toggle="modal" data-bs-target="#addPortfolioModal">
+                        <i class="bi bi-plus-lg me-1"></i>Add Project
+                    </button>
+                    {% endif %}
+                </div>
+
+                {% if portfolio %}
+                <div class="row g-3">
+                    {% for item in portfolio %}
+                    <div class="col-md-6">
+                        <div style="border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;height:100%;">
+                            {% if item.image %}
+                            <img src="{{ item.image.url }}" alt="{{ item.title }}"
+                                 style="width:100%;height:160px;object-fit:cover;">
+                            {% else %}
+                            <div style="width:100%;height:100px;background:linear-gradient(135deg,#dbeafe,#ede9fe);
+                                        display:flex;align-items:center;justify-content:center;">
+                                <i class="bi bi-folder2-open" style="font-size:2rem;color:#7c3aed;"></i>
+                            </div>
+                            {% endif %}
+                            <div class="p-3">
+                                <div class="fw-bold" style="color:#0f172a;font-size:0.9rem;">{{ item.title }}</div>
+                                <p class="text-muted mb-2" style="font-size:0.8rem;line-height:1.5;">{{ item.description|truncatewords:18 }}</p>
+                                {% if item.skills_used.exists %}
+                                <div class="d-flex flex-wrap gap-1 mb-2">
+                                    {% for skill in item.skills_used.all|slice:":3" %}
+                                    <span style="background:#eff6ff;color:#1d4ed8;border-radius:20px;padding:1px 8px;font-size:0.72rem;">{{ skill.name }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                <div class="d-flex align-items-center justify-content-between mt-1">
+                                    {% if item.url %}
+                                    <a href="{{ item.url }}" target="_blank" class="text-decoration-none"
+                                       style="font-size:0.78rem;color:#2563eb;font-weight:600;">
+                                        <i class="bi bi-box-arrow-up-right me-1"></i>View Live
+                                    </a>
+                                    {% else %}<span></span>{% endif %}
+                                    {% if is_own_profile %}
+                                    <a href="{% url 'accounts:delete_portfolio' item.pk %}"
+                                       class="text-danger" style="font-size:0.75rem;text-decoration:none;"
+                                       onclick="return confirm('Delete this portfolio item?')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4" style="color:#94a3b8;">
+                    <i class="bi bi-images" style="font-size:2.5rem;"></i>
+                    <p class="mt-2 mb-0" style="font-size:0.9rem;">
+                        {% if is_own_profile %}No portfolio items yet. Click "Add Project" to showcase your work!
+                        {% else %}No portfolio items yet.{% endif %}
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Add Portfolio Modal -->
+            {% if is_own_profile %}
+            <div class="modal fade" id="addPortfolioModal" tabindex="-1">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content" style="border-radius:16px;border:0;">
+                  <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-folder-plus text-primary me-2"></i>Add Portfolio Project</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+                  <form method="post" action="{% url 'accounts:add_portfolio' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-body pt-2">
+                      <div class="mb-3">
+                        <label class="form-label fw-semibold" style="font-size:0.875rem;">Project Title *</label>
+                        <input type="text" name="title" class="form-control" required placeholder="e.g. E-commerce Website for Textile Retailer">
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label fw-semibold" style="font-size:0.875rem;">Description *</label>
+                        <textarea name="description" class="form-control" rows="3" required
+                                  placeholder="Describe what you built, technologies used, and the impact…"></textarea>
+                      </div>
+                      <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                          <label class="form-label fw-semibold" style="font-size:0.875rem;">Live URL (optional)</label>
+                          <input type="url" name="url" class="form-control" placeholder="https://yourproject.com">
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label fw-semibold" style="font-size:0.875rem;">Cover Image (optional)</label>
+                          <input type="file" name="image" class="form-control" accept="image/*">
+                        </div>
+                      </div>
+                      <div class="mb-1">
+                        <label class="form-label fw-semibold" style="font-size:0.875rem;">Skills Used</label>
+                        <select name="skills_used" class="form-select" multiple style="height:100px;">
+                          {% for skill in all_skills %}
+                          <option value="{{ skill.pk }}">{{ skill.name }}</option>
+                          {% endfor %}
+                        </select>
+                        <div class="form-text">Hold Ctrl/Cmd to select multiple skills.</div>
+                      </div>
+                    </div>
+                    <div class="modal-footer border-0 pt-0">
+                      <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" style="border-radius:8px;">Cancel</button>
+                      <button type="submit" class="btn btn-primary" style="border-radius:8px;">
+                        <i class="bi bi-plus-lg me-1"></i>Add to Portfolio
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+            {% endif %}
+
+            <!-- Reviews Section -->
+            <div class="card-main p-4">
+                <h5 class="fw-bold mb-4"><i class="bi bi-star-fill text-warning me-2"></i>Reviews</h5>
+                {% for review in reviews_received %}
+                <div class="mb-4 pb-4 {% if not forloop.last %}border-bottom{% endif %}">
+                    <div class="d-flex align-items-center gap-3 mb-2">
+                        <img src="{{ review.reviewer.get_avatar_url }}" width="40" height="40" style="border-radius:50%;object-fit:cover;" alt="{{ review.reviewer.username }}">
+                        <div>
+                            <div class="fw-bold" style="color:#0f172a;font-size:0.95rem;">{{ review.reviewer.get_full_name|default:review.reviewer.username }}</div>
+                            <div style="color:#f59e0b;font-size:0.9rem;">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}
+                                {% endfor %}
+                                <span class="text-muted ms-1" style="font-size:0.8rem;">{{ review.created_at|date:"M d, Y" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-muted mb-0" style="font-size:0.9rem;line-height:1.6;">{{ review.comment }}</p>
+                </div>
+                {% empty %}
+                <div class="text-center py-4">
+                    <i class="bi bi-star fs-2 text-muted d-block mb-2"></i>
+                    <p class="text-muted mb-0">No reviews yet.</p>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Secure Checkout — {{ contract.job.title }}{% endblock %}
+
+{% block content %}
+<div style="background:#f1f5f9;min-height:calc(100vh - 68px);padding:3rem 0;">
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <h2 class="fw-bold mb-4" style="color:#0f172a;">Fund Escrow for Contract</h2>
+            
+            <div class="card border-0 shadow-sm mb-4" style="border-radius:12px;">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3 border-bottom pb-2">Contract Details</h5>
+                    <p class="mb-1"><strong>Job:</strong> {{ contract.job.title }}</p>
+                    <p class="mb-3"><strong>Freelancer:</strong> {{ contract.freelancer.get_full_name|default:contract.freelancer.username }}</p>
+
+                    <table class="table mb-0">
+                        <tbody>
+                            <tr>
+                                <td class="text-muted border-0">Contract Amount</td>
+                                <td class="text-end fw-bold border-0">₹{{ contract_amount|floatformat:2 }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted border-0 pb-3">SuratPro Service Fee (20%)</td>
+                                <td class="text-end fw-bold border-0 pb-3">₹{{ platform_fee|floatformat:2 }}</td>
+                            </tr>
+                            <tr style="border-top:1px dashed #cbd5e1;">
+                                <td class="pt-3 fw-bold">Subtotal</td>
+                                <td class="text-end pt-3 fw-bold">₹{{ total_due|floatformat:2 }}</td>
+                            </tr>
+                            {% if wallet_used > 0 %}
+                            <tr>
+                                <td class="text-success"><i class="bi bi-wallet2 me-1"></i> Wallet Applied (Registration Credit)</td>
+                                <td class="text-end text-success fw-bold">-₹{{ wallet_used|floatformat:2 }}</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                        <tfoot>
+                            <tr style="border-top:2px solid #e2e8f0;">
+                                <td class="pt-3 h5 fw-bold" style="color:#0f172a;">Total Due Today</td>
+                                <td class="text-end pt-3 h4 fw-bold" style="color:#2563eb;">₹{{ amount_to_pay|floatformat:2 }}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary-main w-100 py-3" style="font-weight:600;font-size:1.1rem;border-radius:8px;">
+                    <i class="bi bi-shield-lock-fill me-2"></i> Pay & Fund Escrow (Mock)
+                </button>
+            </form>
+            
+            <p class="text-center text-muted mt-3" style="font-size:0.85rem;">
+                Your funds will be held securely in escrow until you approve the final work.
+            </p>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

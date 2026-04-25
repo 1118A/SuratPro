@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Contract: {{ contract.job.title }} — SuratPro{% endblock %}
+
+{% block content %}
+<div style="background:#f1f5f9;min-height:calc(100vh - 68px);padding:2.5rem 0;">
+<div class="container">
+
+    <div class="row gx-4">
+        <div class="col-lg-8">
+            <div class="card-main p-4 p-md-5 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 style="font-size:1.5rem;font-weight:800;color:#0f172a;margin:0;">
+                        Contract Details
+                    </h1>
+                    <span style="padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;
+                        {% if contract.status == 'active' %}background:#d1fae5;color:#065f46;
+                        {% elif contract.status == 'completed' %}background:#dbeafe;color:#1d4ed8;
+                        {% elif contract.status == 'cancelled' %}background:#fef2f2;color:#991b1b;
+                        {% else %}background:#fef3c7;color:#92400e;{% endif %}">
+                        {{ contract.get_status_display }}
+                    </span>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-sm-6 mb-3">
+                        <div style="font-size:0.8rem;color:#64748b;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Job</div>
+                        <div style="font-size:1rem;color:#0f172a;font-weight:600;">
+                            <a href="{% url 'jobs:detail' contract.job.pk %}" style="text-decoration:none;color:inherit;">
+                                {{ contract.job.title }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <div style="font-size:0.8rem;color:#64748b;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Agreed Amount</div>
+                        <div style="font-size:1.1rem;color:#0f172a;font-weight:700;">₹{{ contract.agreed_amount }}</div>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <div style="font-size:0.8rem;color:#64748b;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Client</div>
+                        <div style="font-size:1rem;color:#0f172a;font-weight:600;">{{ contract.client.get_full_name|default:contract.client.username }}</div>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <div style="font-size:0.8rem;color:#64748b;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Freelancer</div>
+                        <div style="font-size:1rem;color:#0f172a;font-weight:600;">{{ contract.freelancer.get_full_name|default:contract.freelancer.username }}</div>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <div style="font-size:0.8rem;color:#64748b;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Started On</div>
+                        <div style="font-size:1rem;color:#0f172a;font-weight:600;">{{ contract.created_at|date:"M d, Y" }}</div>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <div style="font-size:0.8rem;color:#64748b;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Deadline</div>
+                        <div style="font-size:1rem;color:#0f172a;font-weight:600;">{{ contract.deadline|date:"M d, Y"|default:"Not set" }} ({{ contract.delivery_days }} days)</div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h5 style="font-size:1.1rem;font-weight:700;color:#0f172a;">Terms & Milestones</h5>
+                    {% if form %}
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            <button type="submit" class="btn btn-primary mt-2">Save Terms</button>
+                        </form>
+                    {% else %}
+                        <div style="background:#f8fafc;padding:1.5rem;border-radius:12px;color:#334155;white-space:pre-wrap;">{{ contract.terms|default:"No special terms or milestones specified." }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Reviews Section -->
+                {% if contract.status == 'completed' %}
+                {% with reviews=contract.reviews.all %}
+                {% if reviews %}
+                <div class="mt-4 pt-4 border-top">
+                    <h5 class="fw-bold mb-3" style="color:#0f172a;"><i class="bi bi-star-fill text-warning me-2"></i>Reviews</h5>
+                    {% for review in reviews %}
+                    <div class="d-flex gap-3 mb-3">
+                        <img src="{{ review.reviewer.get_avatar_url }}" width="40" height="40" style="border-radius:50%;object-fit:cover;">
+                        <div>
+                            <div class="fw-bold" style="font-size:0.9rem;color:#0f172a;">{{ review.reviewer.get_full_name|default:review.reviewer.username }}</div>
+                            <div style="color:#f59e0b;font-size:0.9rem;">{% for i in "12345" %}{% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}{% endfor %}</div>
+                            <p class="text-muted mb-0 mt-1" style="font-size:0.88rem;">{{ review.comment }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% endwith %}
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card-main p-4 mb-4">
+                <h5 style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:1rem;">Actions</h5>
+                
+                <a href="{% url 'messaging:start_conversation' contract.freelancer.username %}?job={{ contract.job.pk }}" class="btn-primary-main w-100 mb-3 text-center" style="display:block;">
+                    {% if request.user == contract.client %}Message Freelancer{% else %}Message Client{% endif %}
+                </a>
+
+                {% if request.user == contract.client and contract.status == 'active' %}
+                    <!-- Pay Now button -->
+                    {% with paid=contract.payments.all %}
+                    {% if not paid %}
+                    <a href="{% url 'payments:contract_checkout' contract.pk %}" class="btn w-100 fw-bold py-2 mb-3" style="background:#2563eb;color:#fff;border-radius:8px;display:block;text-align:center;text-decoration:none;">
+                        <i class="bi bi-lock-fill me-2"></i>Fund Escrow / Pay Now
+                    </a>
+                    {% endif %}
+                    {% endwith %}
+                    
+                    <form method="post" action="{% url 'contracts:mark_complete' contract.pk %}" onsubmit="return confirm('Are you sure you want to mark this contract as complete? Funds will be released to the freelancer.');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success w-100 fw-bold py-2">
+                            <i class="bi bi-check-circle-fill me-2"></i> Mark as Complete
+                        </button>
+                    </form>
+                {% endif %}
+
+                <!-- Leave Review -->
+                {% if contract.status == 'completed' %}
+                    {% if request.user == contract.client or request.user == contract.freelancer %}
+                        {% with already_reviewed=contract.reviews.all %}
+                        {% with reviewer_ids=already_reviewed|length %}
+                        {% if request.user not in already_reviewed.values_list %}
+                        <a href="{% url 'reviews:leave_review' contract.pk %}" class="btn w-100 fw-bold py-2 mt-3" style="background:#f59e0b;color:#fff;border-radius:8px;display:block;text-align:center;text-decoration:none;">
+                            <i class="bi bi-star-fill me-2"></i>Leave a Review
+                        </a>
+                        {% endif %}
+                        {% endwith %}
+                        {% endwith %}
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+{% endblock %}

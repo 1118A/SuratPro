@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}My Proposals — Track Your Bids{% endblock %}
+
+{% block content %}
+<div style="background:#f1f5f9;min-height:calc(100vh - 68px);padding:2.5rem 0;">
+<div class="container">
+
+    <div class="mb-4">
+        <div class="section-label">Freelancer Dashboard</div>
+        <h1 class="section-title mt-1" style="font-size:1.5rem;">My Proposals</h1>
+    </div>
+
+    {% if proposals %}
+    <div class="d-flex flex-column gap-3">
+    {% for proposal in proposals %}
+    <div class="card-main p-4">
+        <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
+            <div class="flex-grow-1">
+                <a href="{% url 'jobs:detail' proposal.job.pk %}"
+                   style="font-size:1rem;font-weight:700;color:#0f172a;text-decoration:none;">
+                    {{ proposal.job.title }}
+                </a>
+                <div style="font-size:0.8rem;color:#94a3b8;margin-top:3px;">
+                    by {{ proposal.job.client.get_full_name|default:proposal.job.client.username }}
+                    &nbsp;·&nbsp; Submitted {{ proposal.created_at|timesince }} ago
+                </div>
+                <p style="font-size:0.875rem;color:#475569;margin-top:0.6rem;line-height:1.6;">
+                    {{ proposal.cover_letter|truncatewords:25 }}
+                </p>
+            </div>
+
+            <div class="text-end" style="min-width:120px;flex-shrink:0;">
+                <div style="font-size:1.1rem;font-weight:800;color:#0f172a;">₹{{ proposal.bid_amount }}</div>
+                <div style="font-size:0.78rem;color:#64748b;">{{ proposal.delivery_days }} day{{ proposal.delivery_days|pluralize }}</div>
+                <div class="mt-2">
+                    {% if proposal.status == 'pending' %}
+                    <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:#fef3c7;color:#92400e;">
+                        {{ proposal.get_status_display }}
+                    </span>
+                    {% elif proposal.status == 'accepted' %}
+                    <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:#d1fae5;color:#065f46;">
+                        {{ proposal.get_status_display }}
+                    </span>
+                    {% elif proposal.status == 'rejected' %}
+                    <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:#fee2e2;color:#991b1b;">
+                        {{ proposal.get_status_display }}
+                    </span>
+                    {% else %}
+                    <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:#f1f5f9;color:#64748b;">
+                        {{ proposal.get_status_display }}
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if proposal.is_pending %}
+        <div class="mt-3 pt-3" style="border-top:1px solid #f1f5f9;">
+            <form method="post" action="{% url 'proposals:withdraw' proposal.pk %}">
+                {% csrf_token %}
+                <button type="submit"
+                    style="padding:0.4rem 1rem;border:1.5px solid #e2e8f0;border-radius:8px;background:#fff;color:#64748b;font-weight:600;font-size:0.83rem;cursor:pointer;">
+                    <i class="bi bi-x-circle me-1"></i>Withdraw
+                </button>
+            </form>
+        </div>
+        {% elif proposal.is_accepted %}
+        <div class="mt-3 pt-3 d-flex gap-2" style="border-top:1px solid #f1f5f9;">
+            {% if proposal.contract %}
+            <a href="{% url 'contracts:detail' proposal.contract.pk %}" class="btn-primary-main" style="padding:0.4rem 1rem;font-size:0.83rem;text-decoration:none;">
+                <i class="bi bi-file-earmark-check me-1"></i>View Contract
+            </a>
+            {% endif %}
+            <a href="{% url 'messaging:start_conversation' proposal.job.client.username %}?job={{ proposal.job.pk }}"
+               style="padding:0.4rem 1rem;border:1.5px solid #e2e8f0;border-radius:8px;background:#fff;color:#64748b;font-weight:600;font-size:0.83rem;cursor:pointer;text-decoration:none;">
+                <i class="bi bi-chat-dots me-1"></i>Message Client
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="card-main p-5 text-center">
+        <div style="font-size:3rem;margin-bottom:1rem;">📋</div>
+        <h2 style="font-size:1.1rem;font-weight:700;color:#0f172a;">No proposals yet</h2>
+        <p style="color:#64748b;font-size:0.875rem;margin-bottom:1.5rem;">Browse open jobs and submit your first proposal.</p>
+        <a href="{% url 'jobs:list' %}" class="btn-primary-main">Browse Jobs</a>
+    </div>
+    {% endif %}
+
+</div>
+</div>
+{% endblock %}

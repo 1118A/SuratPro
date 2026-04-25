@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}Payment History — All Transactions{% endblock %}
+
+{% block content %}
+<div style="background:#f1f5f9;min-height:calc(100vh - 68px);padding:3rem 0;">
+<div class="container">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h2 class="fw-bold m-0" style="color:#0f172a;">Payment History</h2>
+        
+        <div class="text-end">
+            <span class="text-muted d-block" style="font-size:0.85rem;">Wallet Balance</span>
+            <span class="fs-4 fw-bold text-success">₹{{ user.wallet_balance|floatformat:2 }}</span>
+        </div>
+    </div>
+    
+    <div class="card border-0 shadow-sm" style="border-radius:12px;">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead style="background:#f8fafc;">
+                        <tr>
+                            <th class="border-0 text-muted" style="font-size:0.85rem;font-weight:600;padding:1rem 1.5rem;">Date</th>
+                            <th class="border-0 text-muted" style="font-size:0.85rem;font-weight:600;">Type</th>
+                            <th class="border-0 text-muted" style="font-size:0.85rem;font-weight:600;">Details</th>
+                            <th class="border-0 text-muted" style="font-size:0.85rem;font-weight:600;text-align:right;">Amount</th>
+                            <th class="border-0 text-muted" style="font-size:0.85rem;font-weight:600;text-align:center;padding:1rem 1.5rem;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in payments %}
+                        <tr>
+                            <td style="padding:1rem 1.5rem;">
+                                <div class="fw-bold" style="color:#0f172a;font-size:0.9rem;">{{ payment.created_at|date:"M d, Y" }}</div>
+                                <div class="text-muted" style="font-size:0.8rem;">{{ payment.created_at|date:"h:i A" }}</div>
+                            </td>
+                            <td>
+                                <span style="padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;
+                                    {% if payment.payment_type == 'registration' %}background:#e0e7ff;color:#4f46e5;
+                                    {% elif payment.payment_type == 'project' %}background:#dbeafe;color:#1d4ed8;
+                                    {% else %}background:#d1fae5;color:#065f46;{% endif %}">
+                                    {{ payment.get_payment_type_display }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if payment.contract %}
+                                    <a href="{% url 'contracts:detail' payment.contract.pk %}" style="text-decoration:none;color:#2563eb;font-weight:600;font-size:0.9rem;">
+                                        {{ payment.contract.job.title|truncatechars:40 }}
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted" style="font-size:0.9rem;">Account Activation</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end fw-bold" style="font-size:0.95rem;color:#0f172a;">
+                                {% if payment.payment_type == 'refund' %}
+                                    <span class="text-success">+₹{{ payment.amount|floatformat:2 }}</span>
+                                {% else %}
+                                    ₹{{ payment.amount|floatformat:2 }}
+                                {% endif %}
+                            </td>
+                            <td class="text-center" style="padding:1rem 1.5rem;">
+                                <i class="bi bi-check-circle-fill text-success fs-5" title="Completed"></i>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <div class="text-muted mb-3"><i class="bi bi-receipt fs-1"></i></div>
+                                <h5 class="fw-bold text-dark">No payments yet</h5>
+                                <p class="text-muted">Your transaction history will appear here.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Join SuratPro — Create Your Free Account{% endblock %}
+
+{% block content %}
+<div class="auth-page" style="background:var(--gray-100);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+
+                <!-- Header -->
+                <div class="text-center mb-4">
+                    <a href="{% url 'core:home' %}" class="text-decoration-none">
+                        <div class="navbar-brand-text" style="font-size:1.6rem;">Freelance<span>Market</span></div>
+                    </a>
+                    <h1 class="auth-title mt-3">Create Your Account</h1>
+                    <p class="auth-subtitle">Join thousands of freelancers and clients today</p>
+                </div>
+
+                <div class="auth-card">
+
+                    <!--
+                        ROLE TOGGLE BUTTONS
+                        These are purely visual. Clicking them updates the hidden
+                        <input name="role"> inside the form below via JavaScript.
+                        This is the ONLY reliable way to set role across all POST
+                        submissions — URL params are gone on form submit.
+                    -->
+                    <div class="d-flex gap-2 mb-4 p-1 rounded-3" style="background:var(--gray-200);" id="role-toggle">
+                        <button type="button"
+                                id="toggle-freelancer"
+                                onclick="selectRole('freelancer')"
+                                class="flex-fill py-2 rounded-2 border-0 fw-semibold"
+                                style="font-size:0.875rem;transition:all 0.2s;cursor:pointer;">
+                            <i class="bi bi-laptop me-1"></i> I'm a Freelancer
+                        </button>
+                        <button type="button"
+                                id="toggle-client"
+                                onclick="selectRole('client')"
+                                class="flex-fill py-2 rounded-2 border-0 fw-semibold"
+                                style="font-size:0.875rem;transition:all 0.2s;cursor:pointer;">
+                            <i class="bi bi-building me-1"></i> I'm a Client
+                        </button>
+                    </div>
+
+                    <form method="post" enctype="multipart/form-data" novalidate id="register-form">
+                        {% csrf_token %}
+
+                        <!--
+                            The role is submitted as a plain hidden input.
+                            JavaScript keeps it in sync with the toggle buttons above.
+                            Default is 'freelancer' — set both here and in JS init.
+                        -->
+                        {{ form.role }}
+
+                        <!-- Non-field errors -->
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger alert-main mb-3">
+                            {% for error in form.non_field_errors %}
+                                <div>{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <!-- Name Row -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <label class="form-label" for="{{ form.first_name.id_for_label }}">First Name</label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                <div class="text-danger mt-1" style="font-size:0.8rem;">{{ form.first_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label" for="{{ form.last_name.id_for_label }}">Last Name</label>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                <div class="text-danger mt-1" style="font-size:0.8rem;">{{ form.last_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Username -->
+                        <div class="mb-3">
+                            <label class="form-label" for="{{ form.username.id_for_label }}">Username</label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                            <div class="text-danger mt-1" style="font-size:0.8rem;">{{ form.username.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label class="form-label" for="{{ form.email.id_for_label }}">Email Address</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                            <div class="text-danger mt-1" style="font-size:0.8rem;">{{ form.email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label class="form-label" for="{{ form.password1.id_for_label }}">Password</label>
+                            {{ form.password1 }}
+                            {% if form.password1.errors %}
+                            <div class="text-danger mt-1" style="font-size:0.8rem;">{{ form.password1.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label" for="{{ form.password2.id_for_label }}">Confirm Password</label>
+                            {{ form.password2 }}
+                            {% if form.password2.errors %}
+                            <div class="text-danger mt-1" style="font-size:0.8rem;">{{ form.password2.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <button type="submit" class="btn-primary-main w-100 justify-content-center" style="padding:0.8rem;">
+                            <i class="bi bi-person-plus"></i> Create Account
+                        </button>
+                    </form>
+
+                    <div class="auth-divider mt-4"><span>Already have an account?</span></div>
+                    <a href="{% url 'accounts:login' %}" class="btn-secondary-main w-100 justify-content-center mt-2" style="padding:0.7rem;">
+                        Log In Instead
+                    </a>
+                </div>
+
+                <p class="text-center text-muted mt-3" style="font-size:0.78rem;">
+                    By creating an account, you agree to our
+                    <a href="#" class="text-primary">Terms of Service</a> and
+                    <a href="#" class="text-primary">Privacy Policy</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+/**
+ * Role toggle logic.
+ *
+ * The role field is a Django HiddenInput rendered as:
+ *   <input type="hidden" name="role" value="...">
+ *
+ * selectRole() finds that input and updates its value,
+ * then styles the toggle buttons to show the active choice.
+ *
+ * This runs on page load to set the initial state from the
+ * server-supplied `selected_role` context variable, ensuring
+ * the correct button is highlighted after a failed POST.
+ */
+function selectRole(role) {
+    // Update the hidden form input
+    var roleInput = document.querySelector('input[name="role"]');
+    if (roleInput) {
+        roleInput.value = role;
+    }
+
+    // Style the toggle buttons
+    var btnFreelancer = document.getElementById('toggle-freelancer');
+    var btnClient = document.getElementById('toggle-client');
+
+    if (role === 'freelancer') {
+        btnFreelancer.style.cssText = 'background:white;color:var(--primary);box-shadow:var(--shadow-sm);font-size:0.875rem;transition:all 0.2s;cursor:pointer;';
+        btnClient.style.cssText = 'background:transparent;color:var(--gray-600);font-size:0.875rem;transition:all 0.2s;cursor:pointer;';
+    } else {
+        btnClient.style.cssText = 'background:white;color:var(--primary);box-shadow:var(--shadow-sm);font-size:0.875rem;transition:all 0.2s;cursor:pointer;';
+        btnFreelancer.style.cssText = 'background:transparent;color:var(--gray-600);font-size:0.875rem;transition:all 0.2s;cursor:pointer;';
+    }
+}
+
+// Initialise on page load using the value Django already put in the hidden input.
+// This correctly handles:
+//   - GET ?role=freelancer  -> Django sets initial value to 'freelancer'
+//   - GET ?role=client      -> Django sets initial value to 'client'
+//   - POST re-render        -> Django re-renders the input with the posted value
+document.addEventListener('DOMContentLoaded', function () {
+    var roleInput = document.querySelector('input[name="role"]');
+    var currentRole = (roleInput && roleInput.value) ? roleInput.value : 'freelancer';
+    selectRole(currentRole);
+});
+</script>
+{% endblock %}

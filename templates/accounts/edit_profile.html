@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Your Profile — SuratPro{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <a href="{% url 'accounts:profile' %}" class="text-muted text-decoration-none">
+                    <i class="bi bi-arrow-left"></i> Back to Profile
+                </a>
+            </div>
+
+            <div class="card-main p-4 p-md-5">
+                <h1 class="section-title mb-1" style="font-size:1.5rem;">Edit Your Profile</h1>
+                <p class="text-muted mb-4" style="font-size:0.875rem;">Keep your profile up to date to attract the right opportunities.</p>
+
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Avatar Preview -->
+                    <div class="d-flex align-items-center gap-4 mb-4 pb-4 border-bottom">
+                        <img src="{{ user.get_avatar_url }}" alt="Current avatar" id="avatar-preview"
+                             style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--gray-300);"
+                             onerror="this.src='{% static "img/default_avatar.png" %}'">
+                        <div>
+                            <label class="form-label mb-1">Profile Photo</label>
+                            {{ form.avatar }}
+                            <div class="form-text">JPG, PNG or GIF. Max 2MB.</div>
+                        </div>
+                    </div>
+
+                    <!-- Name Row -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">First Name</label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}<div class="text-danger" style="font-size:0.8rem;">{{ form.first_name.errors.0 }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Last Name</label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}<div class="text-danger" style="font-size:0.8rem;">{{ form.last_name.errors.0 }}</div>{% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label class="form-label">Email Address</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}<div class="text-danger" style="font-size:0.8rem;">{{ form.email.errors.0 }}</div>{% endif %}
+                    </div>
+
+                    <!-- Bio -->
+                    <div class="mb-3">
+                        <label class="form-label">Bio / Professional Summary</label>
+                        {{ form.bio }}
+                        <div class="form-text">Describe your expertise, experience, and what you offer.</div>
+                    </div>
+
+                    <!-- Contact Details -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Phone</label>
+                            {{ form.phone }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Location</label>
+                            {{ form.location }}
+                        </div>
+                    </div>
+
+                    <!-- Website -->
+                    <div class="mb-3">
+                        <label class="form-label">Website / Portfolio URL</label>
+                        {{ form.website }}
+                        {% if form.website.errors %}<div class="text-danger" style="font-size:0.8rem;">{{ form.website.errors.0 }}</div>{% endif %}
+                    </div>
+
+                    <!-- Resume Upload (Freelancers) -->
+                    {% if user.is_freelancer %}
+                    <div class="mb-4 p-4 rounded" style="background:#f8fafc;border:1px dashed #cbd5e1;">
+                        <label class="form-label fw-bold"><i class="bi bi-file-earmark-person me-2 text-primary"></i>Resume / CV</label>
+                        {% if user.resume %}
+                        <div class="mb-2">
+                            <span class="text-success"><i class="bi bi-check-circle-fill me-1"></i></span>
+                            <a href="{{ user.resume.url }}" target="_blank" class="text-primary fw-bold text-decoration-none">Current Resume</a>
+                            <span class="text-muted ms-2" style="font-size:0.8rem;">(upload a new one to replace)</span>
+                        </div>
+                        {% endif %}
+                        {{ form.resume }}
+                        <div class="form-text">PDF, DOC, or DOCX. Max 5MB.</div>
+                    </div>
+                    {% endif %}
+
+                    <div class="d-flex gap-3 pt-3 border-top">
+                        <button type="submit" class="btn-primary-main">
+                            <i class="bi bi-check-circle"></i> Save Changes
+                        </button>
+                        <a href="{% url 'accounts:profile' %}" class="btn-secondary-main">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Live avatar preview
+document.querySelector('input[name="avatar"]').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            document.getElementById('avatar-preview').src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>
+{% endblock %}
